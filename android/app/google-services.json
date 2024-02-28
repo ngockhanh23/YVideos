@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176541588146",
+    "project_id": "yvideos-fb488",
+    "storage_bucket": "yvideos-fb488.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176541588146:android:8f6d199d8586f302a287ab",
+        "android_client_info": {
+          "package_name": "com.example.y_videos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0NHfQQZVVPGGts--K5y2w2o_sVkaSA2g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
