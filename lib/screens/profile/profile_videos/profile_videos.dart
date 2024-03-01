@@ -40,6 +40,7 @@ class _ProfileVideosState extends State<ProfileVideos> {
           doc['video_url'],
           doc['content_video'],
           doc['date_upload'].toDate(),
+          doc['privacy_viewer'],
           doc['user'],
         );
 

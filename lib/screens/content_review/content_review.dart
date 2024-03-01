@@ -16,7 +16,9 @@ class ContentReview extends StatefulWidget {
 
 class _ContentReviewState extends State<ContentReview> {
   late VideoPlayerController _controller;
-  TextEditingController _contentController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  // bool _isUploading = false;
+  int _privacyViewer = 0;
 
   @override
   void initState() {
@@ -49,15 +51,14 @@ class _ContentReviewState extends State<ContentReview> {
 
           children: [
             Container(
-              width: 150,
+                width: 150,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10)
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: VideoPlayerReview(
                   videoPath: widget.videoPath,
                 )),
-            const SizedBox(height: 20,),
-            const SizedBox(height: 20,),
+            const SizedBox(height: 40,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               child: TextField(
@@ -75,22 +76,27 @@ class _ContentReviewState extends State<ContentReview> {
             ),
             const Divider(thickness: 0.5,),
 
-            ListTile(
-              onTap: (){},
-              leading: const Icon(Icons.remove_red_eye_outlined),
-              title: Text("Đối tượng", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              trailing: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Mọi người", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),),
-                  Icon(Icons.arrow_forward_ios_rounded),
-                ],
+            InkWell(
+              onTap: (){
+
+              },
+              child: ListTile(
+                onTap: () => _showPrivacyOption(),
+                leading: const Icon(Icons.remove_red_eye_outlined),
+                title: Text("Đối tượng", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                trailing: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Mọi người", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),),
+                    Icon(Icons.arrow_forward_ios_rounded),
+                  ],
+                ),
               ),
             ),
             ListTile(
               onTap: (){},
               leading: const Icon(Icons.tag_sharp),
-              title: Text("Hashtag", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              title: const Text("Hashtag", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               trailing: const  Icon(Icons.arrow_forward_ios_rounded),
             )
           ],
@@ -124,24 +130,30 @@ class _ContentReviewState extends State<ContentReview> {
                 flex: 4,
                 child: ElevatedButton(
                   onPressed: () {
-                    VideoServices().uploadVideoContent(widget.videoPath).then((_) => {
-                    showSnackBar(context),
-                    Navigator.pop(context)
 
-                    });
+                    _showUploadingDialog();
+
+                    VideoServices().uploadVideoContent(widget.videoPath, _contentController.text, _privacyViewer).then((_) => {
+                          Navigator.pop(context),
+                          showSnackBar(context),
+                          Navigator.pop(context)
+                        });
                   },
-                  child: const Row(
-                    children: [
-                      const Spacer(),
-                      const Icon(Icons.upload_outlined, color: Colors.white,),
-                      const Text(
-                        "Đăng",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      const Spacer(),
+                  child:
+                      Row(
+                        children: [
 
-                    ],
-                  ),
+                          const Spacer(),
+                          const Icon(Icons.upload_outlined, color: Colors.white,),
+                          const Text(
+                            "Đăng",
+                            style: TextStyle(color: Colors.white),
+                          ),
+
+                          const Spacer(),
+
+                        ],
+                      ),
                   style: ButtonStyle(
                     backgroundColor:
                     MaterialStateProperty.all<Color>(Colors.redAccent),
@@ -168,4 +180,125 @@ class _ContentReviewState extends State<ContentReview> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  _showPrivacyOption(){
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              height: 200,
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Chọn quyền riêng tư:',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const Divider(
+                    thickness: 0.5,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _privacyViewer = 0;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Expanded(
+                          flex: 5,
+                          child:  ListTile(
+                            title: Text("Công khai"),
+                            leading: Icon(Icons.public),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Radio(
+                            value: 0,
+                            groupValue: _privacyViewer,
+                            onChanged: (value) {
+                              setState(() {
+                                _privacyViewer = value!;
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _privacyViewer = 1;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Expanded(
+                          flex: 5,
+                          child: ListTile(
+                            title: Text("Riêng tư"),
+                            leading: Icon(Icons.lock_outline),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Radio(
+                            value: 1,
+                            groupValue: _privacyViewer,
+                            onChanged: (value) {
+                              setState(() {
+                                _privacyViewer = value!;
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showUploadingDialog(){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white, // Màu nền của hộp thoại
+          shape: RoundedRectangleBorder( // Tạo hình dạng cho hộp thoại
+            borderRadius: BorderRadius.circular(10),
+          ),
+          contentPadding: EdgeInsets.all(20.0), // Định dạng kích thước của nội dung
+          content: const SizedBox(
+            height: 150, // Chiều cao của nội dung
+            width: 300, // Chiều rộng của nội dung
+            // color: Colors.blue, // Màu nền của nội dung
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 20,),
+                const Text("Đang tải lên video của bạn...", style: TextStyle(fontSize: 20)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+  }
+
 }

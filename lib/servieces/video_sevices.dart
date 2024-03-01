@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:y_videos/models/video_likes.dart';
+import 'package:y_videos/servieces/account_services.dart';
+
+import '../models/account.dart';
 
 class VideoServices{
 
@@ -67,17 +70,42 @@ class VideoServices{
     }
   }
 
-  Future<void> uploadVideoContent(String filePath) async {
+  Future<void> uploadVideoContent(String filePath, String content, int privacyViewer) async {
     try {
       File videoFile = File(filePath);
-      Reference storageReference = FirebaseStorage.instance.ref().child('videos/${DateTime.now().millisecondsSinceEpoch}.mp4');
+      Account userLogin = await AccountServices.getUserLogin();
+      Object user = {
+        'user_id': userLogin.userID,
+        'avatar_url': userLogin.avatarUrl,
+        'user_name': userLogin.userName,
+      };
+      Reference storageReference = FirebaseStorage.instance.ref().child('${userLogin.userID}/videos/${DateTime.now().millisecondsSinceEpoch}.mp4');
+
+      // Upload video lên Firebase Storage
       UploadTask uploadTask = storageReference.putFile(videoFile);
-      uploadTask.then((_) {
-        print('Upload video thành công!');
+
+      // Lắng nghe sự kiện hoàn thành khi upload
+      await uploadTask.whenComplete(() async {
+        // Lấy đường dẫn đến video sau khi upload thành công
+        String videoURL = await storageReference.getDownloadURL();
+
+        CollectionReference videosCollection = FirebaseFirestore.instance.collection('Videos');
+        // Thêm một tài liệu mới vào bộ sưu tập
+        await videosCollection.add({
+          'content_video': content,
+          'date_upload': DateTime.now(),
+          'privacy_viewer' : privacyViewer,
+          'user': user,
+          'video_url' : videoURL
+          // Thêm các trường dữ liệu khác nếu cần thiết
+        });
+
       });
-      await uploadTask;
+
+
     } catch (e) {
       print('Lỗi khi upload video: $e');
     }
+
   }
 }

@@ -41,7 +41,6 @@ class CreateContent extends StatelessWidget{
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.camera,size: 60,color: Colors.white,),
-
                           Text("Camera", style: TextStyle(fontSize: 40, color: Colors.white),)
                         ],
                       ),

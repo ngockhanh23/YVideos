@@ -138,7 +138,7 @@ class _LoginState extends State<Login> {
 
   _onLogin(BuildContext context) async {
     try {
-      await this._auth.signInWithEmailAndPassword(email: this._emailController.text, password: this._passwordController.text);
+      await this._auth.signInWithEmailAndPassword(email: this._emailController.text.trim(), password: this._passwordController.text.trim());
       print('đăng nhập thành công');
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -147,8 +147,6 @@ class _LoginState extends State<Login> {
           .get();
       if (querySnapshot.docs.isNotEmpty) {
         var userData = querySnapshot.docs[0].data() as Map<String, dynamic>;
-
-
 
         this.prefs = await SharedPreferences.getInstance();
         prefs.setString('user_id', userData['userID'].toString());

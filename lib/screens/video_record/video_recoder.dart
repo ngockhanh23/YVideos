@@ -125,12 +125,14 @@ class _VideoRecorderState extends State<VideoRecorder> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _cameraController == null
-          ? CircularProgressIndicator()
+          ? Center(child: CircularProgressIndicator())
           : Stack(
         children: [
           SizedBox(
             height: double.infinity,
-            child: CameraPreview(_cameraController!),
+            child: CameraPreview(
+                _cameraController!,
+            ),
           ),
           Positioned(
             left: 15,

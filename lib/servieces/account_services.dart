@@ -27,8 +27,8 @@ class AccountServices {
       Account userLogin = await AccountServices.getUserLogin();
       Object user = {
         'user_id': userLogin.userID,
-        'avatar_url': userLogin.userName,
-        'user_name': userLogin.avatarUrl,
+        'avatar_url': userLogin.avatarUrl,
+        'user_name': userLogin.userName,
       };
       Map<String, dynamic> notification = {
         'content': "Đã bắt đầu theo dõi bạn",

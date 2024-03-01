@@ -42,7 +42,7 @@ class _HomeFragmentState extends State<HomeFragment> {
   }
 
   Future<void> fetchDataVideo() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Videos').get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Videos').where('privacy_viewer', isEqualTo: 0).get();
     List<VideoItem> videoList = [];
 
     querySnapshot.docs.forEach((doc) {
@@ -53,6 +53,7 @@ class _HomeFragmentState extends State<HomeFragment> {
         doc['video_url'],
         doc['content_video'],
         doc['date_upload'].toDate(),
+        doc['privacy_viewer'],
         userUpload,
       );
 

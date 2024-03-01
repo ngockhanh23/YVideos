@@ -34,12 +34,11 @@ class _VideoPlayerReviewState extends State<VideoPlayerReview> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-
       child: _controller.value.isInitialized
           ? AspectRatio(
-        aspectRatio: _controller.value.aspectRatio,
-        child: VideoPlayer(_controller),
-      )
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            )
           : CircularProgressIndicator(),
     );
   }

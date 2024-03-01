@@ -4,16 +4,19 @@ class Video {
   String _contentVideo;
 
   DateTime _dateUpload;
+  int _privacyViewer ;
+
   Map<String, dynamic> _user;
 
   Video(this._id, this._videoUrl, this._contentVideo,
-      this._dateUpload, this._user);
+      this._dateUpload,this._privacyViewer, this._user);
 
   Video.empty()
       : _id = '',
         _videoUrl = '',
         _contentVideo = '',
         _dateUpload = DateTime.now(),
+        _privacyViewer = 0,
         _user = {};
 
   Map<String, dynamic> get user => _user;
@@ -40,6 +43,13 @@ class Video {
 
   set videoUrl(String value) {
     _videoUrl = value;
+  }
+
+
+  int get privacyViewer => _privacyViewer;
+
+  set privacyViewer(int value) {
+    _privacyViewer = value;
   }
 
   String get id => _id;
