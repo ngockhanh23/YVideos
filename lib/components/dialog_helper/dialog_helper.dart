@@ -96,4 +96,14 @@ class DialogHelper {
       },
     );
   }
+
+  static void successToastSnackbar(BuildContext context, String content, int time){
+      final snackBar = SnackBar(
+        content: Text(content),
+        duration: Duration(seconds: time),
+        backgroundColor: Colors.green,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+  }
 }

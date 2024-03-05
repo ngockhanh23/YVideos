@@ -4,6 +4,8 @@ import 'package:y_videos/models/account.dart';
 import 'package:y_videos/screens/registers/password_register/password_register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../servieces/account_services.dart';
+
 
 class IDRegister extends StatefulWidget {
   @override
@@ -13,34 +15,20 @@ class IDRegister extends StatefulWidget {
 class _IDRegisterState extends State<IDRegister> {
 
 
-  TextEditingController _userController = TextEditingController();
+  TextEditingController _idController = TextEditingController();
   bool _isButtonEnabled = false;
 
 
-  Future<bool> checkIDExists(String idUser) async {
-    try {
-      // Thực hiện truy vấn trong Firestore
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('Users')
-          .where('userID', isEqualTo: idUser)
-          .get();
 
-      return querySnapshot.docs.isNotEmpty;
-
-    } catch (e) {
-      print('Error checking email existence: $e');
-      return false;
-    }
-  }
 
 
 
   @override
   void initState() {
-    _userController.addListener(() {
+    _idController.addListener(() {
       // print(_emailController.text);
       setState(() {
-        _userController.text != "" ? this._isButtonEnabled = true : this._isButtonEnabled = false;
+        _idController.text != "" ? this._isButtonEnabled = true : this._isButtonEnabled = false;
       });
     });
     super.initState();
@@ -67,7 +55,7 @@ class _IDRegisterState extends State<IDRegister> {
             Stack(
               children: [
                 TextField(
-                    controller: _userController,
+                    controller: _idController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       hintText: "Tạo Yvideo ID cho tài khoản dùng của bạn",
@@ -78,15 +66,12 @@ class _IDRegisterState extends State<IDRegister> {
                         borderSide: BorderSide(color: Colors.black12),
                       ),
                     )),
-                const Text(
-                  "Mỗi ID là một định danh duy nhất để có thể dể dàng tìm kiếm và truy cập và bạn có thể thay đổi về sau",
-                  softWrap: true,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),),
+
                 Positioned(
                     right: 0,
                     child: IconButton(
                       onPressed: () {
-                        this._userController.text = "";
+                        this._idController.text = "";
                       },
                       icon: Icon(
                         Icons.cancel,
@@ -95,10 +80,17 @@ class _IDRegisterState extends State<IDRegister> {
                     ))
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            // Text("Sử dụng Email của bạn để đăng ký sử dụng", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),),
+            const Text(
+              "Mỗi ID là một định danh duy nhất để có thể dể dàng tìm kiếm và truy cập và bạn có thể thay đổi về sau",
+              softWrap: true,
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),),
+
+            const SizedBox(
+              height: 20,
+            ),
             Container(
               width: double.infinity,
               child: ElevatedButton(
@@ -129,11 +121,11 @@ class _IDRegisterState extends State<IDRegister> {
   }
 
   _onCheckIDUser(BuildContext context, Account account) async {
-    if (await checkIDExists(_userController.text)) {
+    if (await AccountServices().checkIDExists(_idController.text.trim())) {
       DialogHelper.warningAlertDialog(context, "Đã có người sử dụng Yvideo ID này", "Thử với ID khác");
     } else {
       // Account account = Account.empty();
-      account.userID = _userController.text;
+      account.userID = _idController.text.trim();
 
       Navigator.pushReplacement(
         context,

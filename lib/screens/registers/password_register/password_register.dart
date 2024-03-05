@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pw_validator/Resource/Strings.dart';
 import 'package:y_videos/screens/registers/name_register/name_register.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+
 
 import '../../../models/account.dart';
+import '../../../servieces/custom_vietnamese_pw_validation.dart';
 
 class PasswordRegister extends StatefulWidget {
   @override
@@ -10,32 +14,16 @@ class PasswordRegister extends StatefulWidget {
 
 class _PasswordRegisterState extends State<PasswordRegister> {
   TextEditingController _passwordController = TextEditingController();
+  GlobalKey<FlutterPwValidatorState> validatorKey = GlobalKey<FlutterPwValidatorState>();
 
-  bool _checkPasswordLength = false;
-  bool _checkPasswordContainingDigit = false;
-  bool _checkPasswordContainingSpecialCharacter = false;
+
+
+
 
   bool _isShowPassword = false;
   bool _isButtonEnabled = false;
 
-  @override
-  void initState() {
-      _passwordController.addListener(() {
-        setState(() {
-          _checkPasswordLength = this._passwordController.text.length >= 8;
-          _checkPasswordContainingDigit = this._passwordController.text.contains(RegExp(r'\d'));
-          _checkPasswordContainingSpecialCharacter = _passwordController.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-          if(_checkPasswordLength && _checkPasswordContainingDigit && _checkPasswordContainingSpecialCharacter){
-            // _passwordController.text != "" ? this._isButtonEnabled = true : this._isButtonEnabled = false;
-            this._isButtonEnabled = true;
-          } else {
-            this._isButtonEnabled = false;
-          }
-        });
-      });
 
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,40 +96,35 @@ class _PasswordRegisterState extends State<PasswordRegister> {
                     ))
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             const Text("Mật khẩu của bạn phải bao gồm ít nhất:", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontSize: 16),),
-            
-            Row(
-                children: [
-                  Icon(
-                    Icons.check_circle,
-                    color:  !this._checkPasswordLength ? Colors.black54 : Colors.green,
 
-                  ),
-                  const Text("8 ký tự", style: TextStyle(fontSize: 16),),
-                ],
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color:  !this._checkPasswordContainingDigit ? Colors.black54 : Colors.green,
-                ),
-                const Text("Bao gồm chữ số", style: TextStyle(fontSize: 16),),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color:  !this._checkPasswordContainingSpecialCharacter ? Colors.black54 : Colors.green,
+            FlutterPwValidator(
+              key: validatorKey,
+              controller: _passwordController,
+              minLength: 6,
+              uppercaseCharCount: 1,
+              numericCharCount: 1,
+              specialCharCount: 1,
+              width: 400,
+              height: 200,
+              strings: CustomVietnamesePwValidation(),
 
-                ),
-                const Text("Có chứa ký tự đặc biệt", style: TextStyle(fontSize: 16),),
-              ],
+              onSuccess: () {
+                setState(() {
+                  _isButtonEnabled = true;
+                });
+              },
+              onFail: () {
+                setState(() {
+                  _isButtonEnabled = false;
+                });
+
+              },
             ),
+
 
             const SizedBox(height: 12),
 
@@ -189,4 +172,12 @@ class _PasswordRegisterState extends State<PasswordRegister> {
       ),
     );
   }
+
 }
+
+
+
+
+
+
+

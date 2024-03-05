@@ -76,11 +76,6 @@ class _AccountInformationState extends State<AccountInformation> {
 
   getUserLogin()  async {
     userLogin = await AccountServices.getUserLogin();
-    // user = {
-    //   'user_id': userLogin.userID,
-    //   'avatar_url': AccountServices.getUserLogin().name,
-    //   'user_name': AccountServices.getUserLogin().avatarUrl,
-    // };
   }
 
   getAccountFollower() {
@@ -195,8 +190,9 @@ class _AccountInformationState extends State<AccountInformation> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, "/edit-profile");
+                        onTap: () async {
+                          await Navigator.pushNamed(context, "/edit-profile");
+                          getUserLogin();
                         },
                         child: Container(
                           height: 45,

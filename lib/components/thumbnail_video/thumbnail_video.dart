@@ -4,8 +4,12 @@ import 'package:y_videos/components/video_item/video_item.dart';
 import 'package:y_videos/models/video.dart';
 import 'package:y_videos/screens/video_item_screen/video_item_screen.dart';
 
+import '../../models/account.dart';
+import '../../servieces/account_services.dart';
+
 class ThumbnailVideo extends StatefulWidget{
   final Video video;
+
 
   ThumbnailVideo({required this.video});
 
@@ -15,6 +19,7 @@ class ThumbnailVideo extends StatefulWidget{
 
 class _ThumbnailVideoState extends State<ThumbnailVideo> {
   late VideoPlayerController _controller;
+
 
   @override
   void initState() {
@@ -33,6 +38,8 @@ class _ThumbnailVideoState extends State<ThumbnailVideo> {
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return _controller.value.isInitialized
@@ -44,12 +51,11 @@ class _ThumbnailVideoState extends State<ThumbnailVideo> {
               context,
               MaterialPageRoute(
                 builder: (context) => VideoItemScreen(video: widget.video),
-                
+
               ));
         },
         child: VideoPlayer(_controller),
       ),
-    )
-        : Center(child: CircularProgressIndicator());
+    ): Center(child: CircularProgressIndicator());
   }
 }

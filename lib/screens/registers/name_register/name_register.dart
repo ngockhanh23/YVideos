@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../../components/dialog_helper/dialog_helper.dart';
 import '../../../models/account.dart';
 
 class NameRegister extends StatefulWidget{
@@ -134,7 +135,8 @@ class _NameRegisterState extends State<NameRegister> {
       Navigator.pushReplacementNamed(context, '/login');
 
 
-      showSnackBar(context);
+      DialogHelper.successToastSnackbar(context, "Đăng ký thành công", 3);
+
 
 
     } catch (e) {
@@ -143,19 +145,5 @@ class _NameRegisterState extends State<NameRegister> {
     }
   }
 
-  void showSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
-      content: Text('Đăng ký thành công'),
-      duration: Duration(seconds: 3),
-      backgroundColor: Colors.green,
-      // action: SnackBarAction(
-      //   label: Text('đóng'),
-      //
-      //   onPressed: () {
-      //     // Some action to take when user presses the action button
-      //   },
-      // ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+
 }

@@ -17,8 +17,10 @@ class ContentReview extends StatefulWidget {
 class _ContentReviewState extends State<ContentReview> {
   late VideoPlayerController _controller;
   final TextEditingController _contentController = TextEditingController();
+
   // bool _isUploading = false;
   int _privacyViewer = 0;
+  String _privacyString = "Mọi người";
 
   @override
   void initState() {
@@ -58,46 +60,44 @@ class _ContentReviewState extends State<ContentReview> {
                 child: VideoPlayerReview(
                   videoPath: widget.videoPath,
                 )),
-            const SizedBox(height: 40,),
+            const SizedBox(
+              height: 40,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               child: TextField(
                 controller: _contentController,
                 maxLines: null,
                 decoration: const InputDecoration(
-                  hintText: "Tạo nội dung để cung cấp nhiều thông tin hơn",
-                  hintStyle: TextStyle(
-                    color: Colors.grey
-                  ),
-
-                  border: InputBorder.none
-                ),
+                    hintText: "Tạo nội dung để cung cấp nhiều thông tin hơn", hintStyle: TextStyle(color: Colors.grey), border: InputBorder.none),
               ),
             ),
-            const Divider(thickness: 0.5,),
-
+            const Divider(
+              thickness: 0.5,
+            ),
             InkWell(
-              onTap: (){
-
-              },
+              onTap: () {},
               child: ListTile(
                 onTap: () => _showPrivacyOption(),
-                leading: const Icon(Icons.remove_red_eye_outlined),
+                leading: Icon(Icons.remove_red_eye_outlined),
                 title: Text("Đối tượng", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                trailing: const Row(
+                trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("Mọi người", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),),
+                    Text(
+                      _privacyString,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+                    ),
                     Icon(Icons.arrow_forward_ios_rounded),
                   ],
                 ),
               ),
             ),
             ListTile(
-              onTap: (){},
+              onTap: () {},
               leading: const Icon(Icons.tag_sharp),
               title: const Text("Hashtag", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              trailing: const  Icon(Icons.arrow_forward_ios_rounded),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
             )
           ],
         ),
@@ -111,7 +111,7 @@ class _ContentReviewState extends State<ContentReview> {
             Expanded(
                 flex: 1,
                 child: InkWell(
-                  onTap: (){
+                  onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -122,49 +122,46 @@ class _ContentReviewState extends State<ContentReview> {
                           color: Colors.black26,
                         ),
                         borderRadius: const BorderRadius.all(Radius.circular(20))),
-                    child: const  Icon(Icons.arrow_back_ios_new_outlined),
+                    child: const Icon(Icons.arrow_back_ios_new_outlined),
                   ),
                 )),
-            const SizedBox(width: 10,),
+            const SizedBox(
+              width: 10,
+            ),
             Expanded(
                 flex: 4,
                 child: ElevatedButton(
                   onPressed: () {
-
                     _showUploadingDialog();
 
-                    VideoServices().uploadVideoContent(widget.videoPath, _contentController.text, _privacyViewer).then((_) => {
-                          Navigator.pop(context),
-                          showSnackBar(context),
-                          Navigator.pop(context)
-                        });
+                    VideoServices()
+                        .uploadVideoContent(widget.videoPath, _contentController.text, _privacyViewer)
+                        .then((_) => {Navigator.pop(context), showSnackBar(context), Navigator.pop(context)});
                   },
-                  child:
-                      Row(
-                        children: [
-
-                          const Spacer(),
-                          const Icon(Icons.upload_outlined, color: Colors.white,),
-                          const Text(
-                            "Đăng",
-                            style: TextStyle(color: Colors.white),
-                          ),
-
-                          const Spacer(),
-
-                        ],
+                  child: Row(
+                    children: [
+                      const Spacer(),
+                      const Icon(
+                        Icons.upload_outlined,
+                        color: Colors.white,
                       ),
+                      const Text(
+                        "Đăng",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
                   style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.redAccent),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent),
                   ),
                 )),
-
           ],
         ),
       ),
     );
   }
+
   void showSnackBar(BuildContext context) {
     final snackBar = SnackBar(
       content: Text('Đã đăng tải video của bạn'),
@@ -181,7 +178,7 @@ class _ContentReviewState extends State<ContentReview> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  _showPrivacyOption(){
+  _showPrivacyOption() {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -202,16 +199,15 @@ class _ContentReviewState extends State<ContentReview> {
                   ),
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        _privacyViewer = 0;
-                      });
+                      _privacyViewer = 0;
+                      Navigator.pop(context);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Expanded(
                           flex: 5,
-                          child:  ListTile(
+                          child: ListTile(
                             title: Text("Công khai"),
                             leading: Icon(Icons.public),
                           ),
@@ -222,9 +218,8 @@ class _ContentReviewState extends State<ContentReview> {
                             value: 0,
                             groupValue: _privacyViewer,
                             onChanged: (value) {
-                              setState(() {
-                                _privacyViewer = value!;
-                              });
+                              _privacyViewer = value!;
+                              Navigator.pop(context);
                             },
                           ),
                         )
@@ -233,9 +228,9 @@ class _ContentReviewState extends State<ContentReview> {
                   ),
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        _privacyViewer = 1;
-                      });
+                      _privacyViewer = 1;
+
+                      Navigator.pop(context);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -253,9 +248,8 @@ class _ContentReviewState extends State<ContentReview> {
                             value: 1,
                             groupValue: _privacyViewer,
                             onChanged: (value) {
-                              setState(() {
-                                _privacyViewer = value!;
-                              });
+                              _privacyViewer = value!;
+                              Navigator.pop(context);
                             },
                           ),
                         )
@@ -268,17 +262,32 @@ class _ContentReviewState extends State<ContentReview> {
           },
         );
       },
-    );
+    ).then((value) {
+      setState(() {
+        switch (_privacyViewer) {
+          case 0:
+            _privacyString = "Mọi người";
+            break;
+          case 1:
+            _privacyString = "Riêng tư";
+            break;
+          default:
+            _privacyString = "Mọi người";
+            break;
+        }
+      });
+    });
   }
 
-  void _showUploadingDialog(){
+  void _showUploadingDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white, // Màu nền của hộp thoại
-          shape: RoundedRectangleBorder( // Tạo hình dạng cho hộp thoại
+          shape: RoundedRectangleBorder(
+            // Tạo hình dạng cho hộp thoại
             borderRadius: BorderRadius.circular(10),
           ),
           contentPadding: EdgeInsets.all(20.0), // Định dạng kích thước của nội dung
@@ -290,7 +299,9 @@ class _ContentReviewState extends State<ContentReview> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CircularProgressIndicator(),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 const Text("Đang tải lên video của bạn...", style: TextStyle(fontSize: 20)),
               ],
             ),
@@ -298,7 +309,5 @@ class _ContentReviewState extends State<ContentReview> {
         );
       },
     );
-
   }
-
 }

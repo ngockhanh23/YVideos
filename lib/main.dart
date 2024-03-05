@@ -4,6 +4,7 @@ import 'package:y_videos/screens/login/login.dart';
 import 'package:y_videos/screens/main_screens.dart';
 import 'package:y_videos/screens/profile/edit_profile/edit_id_profile/edit_id_profile.dart';
 import 'package:y_videos/screens/profile/edit_profile/edit_name_profile/edit_name_profile.dart';
+import 'package:y_videos/screens/profile/edit_profile/edit_password_profile/edit_password_profile.dart';
 import 'package:y_videos/screens/profile/edit_profile/edit_profile.dart';
 import 'package:y_videos/screens/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,6 +42,8 @@ class MyApp extends StatelessWidget {
         '/edit-profile': (context) => EditProfile(),
         '/edit-name-profile': (context) => EditNameProfile(),
         '/edit-id-profile': (context) => EditIDProfile(),
+        '/edit-password-profile': (context) => EditPasswordProfile(),
+
       },
     );
   }

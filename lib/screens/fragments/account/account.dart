@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:y_videos/screens/profile/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:y_videos/servieces/account_services.dart';
 
 import '../../login/login.dart';
 
@@ -47,11 +48,7 @@ class _AccountFragmentState extends State<AccountFragment> {
   }
 
   void _logOut(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_id');
-    await prefs.remove('user_name');
-    await prefs.remove('avatar_url');
-
+    AccountServices().signOut();
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
   }
 

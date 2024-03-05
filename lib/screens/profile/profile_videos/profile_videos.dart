@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:y_videos/components/video_item/video_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:y_videos/models/account.dart';
 import 'package:y_videos/models/video.dart';
+import 'package:y_videos/servieces/account_services.dart';
 
 import '../../../components/thumbnail_video/thumbnail_video.dart';
 
@@ -16,11 +18,18 @@ class ProfileVideos extends StatefulWidget{
 
 class _ProfileVideosState extends State<ProfileVideos> {
   List<Video> _lstVideo = [];
+  String? userLoginID;
 
   @override
   void initState() {
+    _getUserLoginID();
     fetchProfileVideo();
     super.initState();
+  }
+
+  _getUserLoginID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userLoginID = prefs.getString('user_id') ?? "";
   }
 
 
@@ -77,11 +86,15 @@ class _ProfileVideosState extends State<ProfileVideos> {
               ),
               itemCount: _lstVideo.length, // Số lượng item trong GridView
               itemBuilder: (BuildContext context, int index) {
-                return ThumbnailVideo(
-                  video:_lstVideo[index],
-                );
+                if (userLoginID != _lstVideo[index].user['user_id'] && _lstVideo[index].privacyViewer == 1)
+                  return Center(
+                    child: Text("Đây là video riêng tư"),
+                  );
+                else
+                  return ThumbnailVideo(
+                    video: _lstVideo[index],
+                  );
               },
-
             ),
           )
         ],

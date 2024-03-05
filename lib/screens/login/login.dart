@@ -149,9 +149,12 @@ class _LoginState extends State<Login> {
         var userData = querySnapshot.docs[0].data() as Map<String, dynamic>;
 
         this.prefs = await SharedPreferences.getInstance();
+        // querySnapshot.docs.first.id
+        prefs.setString('id_user_doc', querySnapshot.docs.first.id.toString());
         prefs.setString('user_id', userData['userID'].toString());
         prefs.setString('user_name', userData['userName'].toString());
         prefs.setString('avatar_url', userData['avatarUrl'].toString());
+
 
 
 
