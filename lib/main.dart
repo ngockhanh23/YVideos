@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/login': (context) => Login(),
         '/main-screens': (context) => MainScreens(),
-        '/search-results': (context) => SearchResults(),
         '/edit-profile': (context) => EditProfile(),
         '/edit-name-profile': (context) => EditNameProfile(),
         '/edit-id-profile': (context) => EditIDProfile(),

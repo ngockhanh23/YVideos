@@ -4,6 +4,9 @@ import 'package:y_videos/screens/fragments/search/search_results/tabs/video_resu
 
 class SearchResults extends StatelessWidget{
 
+  String searchKey;
+  SearchResults({super.key, required this.searchKey});
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -21,7 +24,7 @@ class SearchResults extends StatelessWidget{
         ),
         body: TabBarView(
           children: [
-            VideoResults(),
+            VideoResults(searchKey: searchKey,),
             AccountResults(),
             // Thêm TabBarView khác nếu cần
           ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:y_videos/screens/fragments/search/search_results/search_results.dart';
 
 class SearchFragment extends StatelessWidget{
 
+  TextEditingController _searchKeyController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -19,14 +21,15 @@ class SearchFragment extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 50,
+
               child: TextField(
-                // controller: _emailController,
+                controller: _searchKeyController,
                 onSubmitted: (String searchTerm) {
-                  // Xử lý hành động tìm kiếm ở đây
-                  print('Tìm kiếm: ');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResults(searchKey: _searchKeyController.text.trim())));
+
                 },
                 decoration: InputDecoration(
+
                   labelText: "Nhập nội dung tìm kiếm",
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   border: OutlineInputBorder(
@@ -66,7 +69,7 @@ class SearchFragment extends StatelessWidget{
               margin: EdgeInsets.symmetric(vertical: 5),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/search-results');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResults(searchKey: _searchKeyController.text)));
                 },
                 child: Row(
                   children: [

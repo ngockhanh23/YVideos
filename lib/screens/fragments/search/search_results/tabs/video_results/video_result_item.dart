@@ -11,6 +11,9 @@ class VideoResultItem extends StatelessWidget{
   Video video;
   VideoResultItem({super.key, required this.video});
 
+
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -23,6 +26,7 @@ class VideoResultItem extends StatelessWidget{
       ),
       child: InkWell(
         child: Column(
+
           children: [
             Container(
               width: double.infinity,
@@ -35,44 +39,23 @@ class VideoResultItem extends StatelessWidget{
                 video: video,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Text("Đây là nội dung video item ákdbaksbdaskaasdasdas",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18
-                ),
-              ),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  flex: 2,
-                  child: UserUpload(userID: video.userID,) ,
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Row(
-                    children: [
-                      Icon(Icons.favorite_outline_sharp, color: Colors.black54,),
-                      SizedBox(width: 8), // Đặt khoảng cách giữa Icon và Text
-                      Flexible(
-                        child: Text(
-                          "120",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: true,
-                          style: TextStyle(color: Colors.black54, fontSize: 15),
-                        ),
-                      ),
-                    ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(video.contentVideo,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18
+                    ),
                   ),
                 ),
+
+                UserUpload(userID: video.userID,),
               ],
             )
 

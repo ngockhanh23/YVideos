@@ -6,6 +6,7 @@ import 'package:y_videos/models/video_likes.dart';
 import 'package:y_videos/servieces/account_services.dart';
 
 import '../models/account.dart';
+import '../models/video.dart';
 
 class VideoServices{
 
@@ -103,5 +104,44 @@ class VideoServices{
       print('Lỗi khi upload video: $e');
     }
 
+  }
+
+  Future<List<Video>> getVideosBySearchKey(String searchKey) async {
+    try {
+
+      QuerySnapshot contentVideoQuery  = await FirebaseFirestore.instance
+          .collection('Videos')
+          .where('content_video', isGreaterThanOrEqualTo: searchKey)
+          .where('content_video', isLessThan: searchKey + 'z')
+          .get();
+
+      QuerySnapshot userIdQuery = await FirebaseFirestore.instance
+          .collection('Videos')
+          .where('user_id', isEqualTo: searchKey)
+          .get();
+
+      List<DocumentSnapshot> mergedResults = [];
+      mergedResults.addAll(contentVideoQuery.docs);
+      mergedResults.addAll(userIdQuery.docs);
+      mergedResults.sort((a, b) => a['content_video'].compareTo(b['content_video']));
+
+      List<Video> lstVideo =[];
+      for (var doc in mergedResults) {
+        Video video = Video(
+            doc.id,
+            doc['video_url'],
+            doc['content_video'],
+            doc['date_upload'].toDate(),
+            doc['privacy_viewer'],
+            doc['user_id']
+        );
+        lstVideo.add(video);
+      }
+
+      return lstVideo;
+
+    } catch (e) {
+      return [];
+    }
   }
 }

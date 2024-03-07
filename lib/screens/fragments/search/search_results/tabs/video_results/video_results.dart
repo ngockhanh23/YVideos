@@ -2,11 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:y_videos/screens/fragments/search/search_results/tabs/video_results/video_result_item.dart';
 import 'package:y_videos/screens/video_item_screen/video_item_screen.dart';
+import 'package:y_videos/servieces/video_sevices.dart';
 
 import '../../../../../../components/video_item/video_item.dart';
 import '../../../../../../models/video.dart';
 
 class VideoResults extends StatefulWidget{
+
+  String searchKey;
+  VideoResults({super.key, required this.searchKey});
 
   @override
   State<VideoResults> createState() => _VideoResultsState();
@@ -23,33 +27,13 @@ class _VideoResultsState extends State<VideoResults> {
   }
 
   fetchProfileVideo() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('Videos')
-          .where('user.user_id', isEqualTo: 'ngc_knh')
-          .get();
-
-      List<Video> videoList = [];
-
-      for (var doc in querySnapshot.docs) {
-        Video video = Video(
-          doc.id,
-          doc['video_url'],
-          doc['content_video'],
-          doc['date_upload'].toDate(),
-          doc['privacy_viewer'],
-          doc['user_id']
-        );
-
-        videoList.add(video);
-      }
-
+    VideoServices().getVideosBySearchKey(widget.searchKey).then((result) {
       setState(() {
-        lstVideo = videoList;
+        lstVideo = result;
       });
-    } catch (e) {
-      print('$e');
-    }
+
+    });
+
   }
 
   @override
