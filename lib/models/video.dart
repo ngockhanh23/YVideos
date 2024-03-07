@@ -5,11 +5,10 @@ class Video {
 
   DateTime _dateUpload;
   int _privacyViewer ;
-
-  Map<String, dynamic> _user;
+  String _userID;
 
   Video(this._id, this._videoUrl, this._contentVideo,
-      this._dateUpload,this._privacyViewer, this._user);
+      this._dateUpload,this._privacyViewer,this._userID);
 
   Video.empty()
       : _id = '',
@@ -17,13 +16,9 @@ class Video {
         _contentVideo = '',
         _dateUpload = DateTime.now(),
         _privacyViewer = 0,
-        _user = {};
+        _userID = '';
 
-  Map<String, dynamic> get user => _user;
 
-  set user(Map<String, dynamic> value) {
-    _user = value;
-  }
 
   DateTime get dateUpload => _dateUpload;
 
@@ -50,6 +45,13 @@ class Video {
 
   set privacyViewer(int value) {
     _privacyViewer = value;
+  }
+
+
+  String get userID => _userID;
+
+  set userID(String value) {
+    _userID = value;
   }
 
   String get id => _id;

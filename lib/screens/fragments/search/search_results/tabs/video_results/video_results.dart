@@ -38,7 +38,7 @@ class _VideoResultsState extends State<VideoResults> {
           doc['content_video'],
           doc['date_upload'].toDate(),
           doc['privacy_viewer'],
-          doc['user'],
+          doc['user_id']
         );
 
         videoList.add(video);

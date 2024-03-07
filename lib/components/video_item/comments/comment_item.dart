@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:y_videos/servieces/date_time_vn_format.dart';
+import '../../../models/account.dart';
 import '../../../models/comment.dart';
+import '../../../servieces/account_services.dart';
 
 class CommentItem extends StatefulWidget{
   Comment commentItem;
@@ -12,13 +14,27 @@ class CommentItem extends StatefulWidget{
 class _CommentItemState extends State<CommentItem> {
 
   bool isLikedComment = false;
+  Account? _userComment;
+
+  _getUserComment() {
+    AccountServices().getAccountByUserID(widget.commentItem.userID).then((value){
+      setState(() {
+        _userComment = value;
+      });
+    });
+  }
+  @override
+  void initState() {
+    _getUserComment();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
 
     // TODO: implement build
 
-    return Container(
+    return _userComment == null ? Container() : Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -39,7 +55,7 @@ class _CommentItemState extends State<CommentItem> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
-                      widget.commentItem.user['avatar_url'],
+                      _userComment!.avatarUrl,
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -55,7 +71,7 @@ class _CommentItemState extends State<CommentItem> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.commentItem.user['user_name'],
+                    Text(_userComment!.userName,
                       maxLines: 80,
                       overflow: TextOverflow.ellipsis,
                       softWrap: true,

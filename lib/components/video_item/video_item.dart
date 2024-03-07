@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -6,6 +7,7 @@ import 'package:y_videos/components/video_item/comments/comments.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:y_videos/models/video.dart';
 import 'package:y_videos/models/video_likes.dart';
+import 'package:y_videos/screens/fragments/search/search_results/tabs/account_results/account_results.dart';
 import 'package:y_videos/screens/profile/personal_profile/personal_profile.dart';
 import 'package:y_videos/servieces/comment_services.dart';
 import 'package:y_videos/servieces/video_sevices.dart';
@@ -35,12 +37,14 @@ class _VideoItemState extends State<VideoItem> {
   VideoLikesByUser? likesByUserLogin;
 
   Account userLogin = Account.empty();
+  Account? _userUpload;
 
 
   @override
   void initState() {
     playVideo();
     _getCommentCount();
+    _getUserUpload();
     _getUserLogin().then((_) {
       // _getLikedByUserLogin();
       _getVideoLikesByID();
@@ -66,14 +70,12 @@ class _VideoItemState extends State<VideoItem> {
     VideoServices().getVideoLikesByVideoID(widget.video.id).then((lstLikedVideo) {
       likesCount = lstLikedVideo.length;
       isLoadLikesCount = false;
-
-      // isLiked = lstLikedVideo.any((item) => item.userID == userLogin.userID);
       if (lstLikedVideo.any((item) {
         if (item.userID == userLogin.userID) {
-          likesByUserLogin = item; // Gán giá trị của `item` cho `likesByUserLogin`
-          return true; // Trả về true khi điều kiện đúng
+          likesByUserLogin = item;
+          return true;
         }
-        return false; // Trả về false khi điều kiện sai
+        return false;
       })) {
         // Gọi hàm ở đây
         isLiked = true;
@@ -123,6 +125,11 @@ class _VideoItemState extends State<VideoItem> {
     }
   }
 
+  _getUserUpload() {
+    AccountServices().getAccountByUserID(widget.video.userID).then((value){
+      _userUpload = value;
+    });
+  }
 
 
 
@@ -203,15 +210,7 @@ class _VideoItemState extends State<VideoItem> {
                         );
                       },
                     ),
-                  // AnimatedOpacity(
-                  //   opacity: showHeartIcon ? 1.0 : 0.0,
-                  //   duration: Duration(milliseconds: 700),
-                  //   child: Icon(
-                  //     Icons.favorite,
-                  //     size: 80,
-                  //     color: Colors.red,
-                  //   ),
-                  // )
+
                 ],
               ),
             ),
@@ -233,7 +232,7 @@ class _VideoItemState extends State<VideoItem> {
                                  Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PersonalProfile(userID: widget.video.user['user_id']),
+                                    builder: (context) => PersonalProfile(userID: widget.video.userID),
                                   ),
                                 ).then((value) {
                                   // Xử lý sau khi màn hình PersonalProfile được đóng
@@ -253,7 +252,7 @@ class _VideoItemState extends State<VideoItem> {
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
                                     image: NetworkImage(
-                                      widget.video.user['avatar_url'].toString(),
+                                      _userUpload!.avatarUrl,
                                     ),
                                     fit: BoxFit.cover,
                                   ),
@@ -323,7 +322,7 @@ class _VideoItemState extends State<VideoItem> {
                               isScrollControlled: true,
                               context: context,
                               builder: (BuildContext context) {
-                                return CommentsList(videoID: widget.video.id,userID: widget.video.user['user_id'],);
+                                return CommentsList(videoID: widget.video.id,userID: _userUpload!.userID,);
                               },
                             );
                           },
@@ -390,7 +389,7 @@ class _VideoItemState extends State<VideoItem> {
                   children: [
                     InkWell(
                       onTap: (){},
-                      child: Text(widget.video.user['user_id'], style: TextStyle(
+                      child: Text(_userUpload!.userID, style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold

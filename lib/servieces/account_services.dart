@@ -1,12 +1,32 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
 class AccountServices {
+  Future<Account> getAccountByUserID (String userID) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Users').where('userID', isEqualTo: userID).limit(1).get();
+    if (querySnapshot.docs.isNotEmpty) {
+      var userData = querySnapshot.docs[0].data() as Map<String, dynamic>;
+
+        return Account(
+          userData['userID'].toString(),
+          userData['userName'].toString(),
+          userData['avatarUrl'].toString(),
+          userData['userEmail'].toString(),
+          "",
+        );
+
+      // authService.account = account; // Nếu cần thiết
+    } else {
+      return Account.empty();
+    }
+  }
   void signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -115,6 +135,27 @@ class AccountServices {
       }
     } catch (error) {
       print('Đã xảy ra lỗi khi cập nhật tên người dùng: $error');
+    }
+  }
+
+  Future<void> uploadImageToFirebase(String filePath) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String idUser = prefs.getString('user_id') ?? "";
+      String idUserDoc = prefs.getString('id_user_doc') ?? "";
+      File imageFile = File(filePath);
+      Reference storageReference = FirebaseStorage.instance.ref().child('${idUser}/images/avatar/${DateTime.now().millisecondsSinceEpoch}.png');
+      UploadTask uploadTask = storageReference.putFile(imageFile);
+
+      await uploadTask.whenComplete(() async{
+        String imageURL = await storageReference.getDownloadURL();
+        // print(imageURL);
+        await FirebaseFirestore.instance.collection('Users').doc(idUserDoc).update({'avatarUrl': imageURL}).then((_) {
+          prefs.setString('avatar_url', imageURL);
+        });
+      });
+    } catch (e) {
+      print('Error uploading image: $e');
     }
   }
 

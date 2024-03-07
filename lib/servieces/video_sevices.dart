@@ -74,11 +74,7 @@ class VideoServices{
     try {
       File videoFile = File(filePath);
       Account userLogin = await AccountServices.getUserLogin();
-      Object user = {
-        'user_id': userLogin.userID,
-        'avatar_url': userLogin.avatarUrl,
-        'user_name': userLogin.userName,
-      };
+
       Reference storageReference = FirebaseStorage.instance.ref().child('${userLogin.userID}/videos/${DateTime.now().millisecondsSinceEpoch}.mp4');
 
       // Upload video lên Firebase Storage
@@ -95,7 +91,7 @@ class VideoServices{
           'content_video': content,
           'date_upload': DateTime.now(),
           'privacy_viewer' : privacyViewer,
-          'user': user,
+          'user_id': userLogin.userID,
           'video_url' : videoURL
           // Thêm các trường dữ liệu khác nếu cần thiết
         });

@@ -40,7 +40,7 @@ class _NotificationItemState extends State<NotificationItem> {
             videoSnapshot['content_video'],
             videoSnapshot['date_upload'].toDate(),
             videoSnapshot['privacy_viewer'],
-            videoSnapshot['user'],
+            videoSnapshot['user_id'],
           );
         });
         print(video?.videoUrl);

@@ -3,6 +3,9 @@ import 'package:video_player/video_player.dart';
 import 'package:y_videos/components/thumbnail_video/thumbnail_video.dart';
 import 'package:y_videos/models/video.dart';
 
+import '../../../../../../models/account.dart';
+import '../../../../../../servieces/account_services.dart';
+
 class VideoResultItem extends StatelessWidget{
 
   Video video;
@@ -50,29 +53,7 @@ class VideoResultItem extends StatelessWidget{
               children: [
                 Flexible(
                   flex: 2,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 15,
-                        backgroundImage: NetworkImage(
-                          'https://www.meme-arsenal.com/memes/4408af6c9803cb3f320ecc468b3abbfa.jpg',
-                        ),
-                      ),
-                      SizedBox(width: 8), // Đặt khoảng cách giữa CircleAvatar và Text
-                      Flexible(
-                        child: Text(
-                          "user",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: true,
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: UserUpload(userID: video.userID,) ,
                 ),
                 Flexible(
                   flex: 1,
@@ -99,6 +80,63 @@ class VideoResultItem extends StatelessWidget{
           ],
         ),
       ),
+    );
+  }
+}
+
+class UserUpload extends StatefulWidget{
+  String userID;
+  UserUpload({super.key, required this.userID});
+  @override
+  State<UserUpload> createState() => _UserUploadState();
+}
+
+class _UserUploadState extends State<UserUpload> {
+
+  Account? _userUpload;
+
+
+
+  _getUserUpload() {
+    AccountServices().getAccountByUserID(widget.userID).then((value){
+      setState(() {
+        _userUpload = value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    _getUserUpload();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return _userUpload == null
+        ? Container()
+        : Row(
+      children: [
+        CircleAvatar(
+          radius: 15,
+          backgroundImage: NetworkImage(
+            _userUpload!.avatarUrl,
+          ),
+        ),
+        SizedBox(width: 8), // Đặt khoảng cách giữa CircleAvatar và Text
+        Flexible(
+          child: Text(
+            _userUpload!.userID,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 15,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

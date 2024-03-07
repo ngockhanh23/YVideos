@@ -136,10 +136,11 @@ class _EditPasswordProfileState extends State<EditPasswordProfile> {
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 40,
             ),
-            SizedBox(
-              height: 30,
+            const Text('Mật khẩu mới bao gồm'),
+            const SizedBox(
+              height: 20,
             ),
             FlutterPwValidator(
               key: validatorKey,

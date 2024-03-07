@@ -1,4 +1,6 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:y_videos/components/dialog_helper/dialog_helper.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:y_videos/servieces/account_services.dart';
 
@@ -20,6 +22,27 @@ class _EditProfileState extends State<EditProfile> {
     _userLogin = await AccountServices.getUserLogin();
     if (_userLogin != null) {
       setState(() {});
+    }
+  }
+  Future<void> _pickImage(BuildContext context) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => ContentReview(
+      //           videoPath: result.files.single.path!,
+      //         )));
+      AccountServices().uploadImageToFirebase(result.files.single.path!).then((_){
+          _getUserLogin();
+          DialogHelper.successToastSnackbar(context, "Cập nhật ảnh đại diện thành công", 3);
+
+      });
+    } else {
+      // User canceled the picker
     }
   }
 
@@ -190,10 +213,10 @@ class _EditProfileState extends State<EditProfile> {
                       child: TextButton(
                           onPressed: () {
                             Navigator.pop(context);
+                            _pickImage(context);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            // crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.image_outlined,

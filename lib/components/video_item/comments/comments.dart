@@ -58,7 +58,7 @@ class _CommentsListState extends State<CommentsList> {
               comment['comment_content'],
               comment['number_of_likes'],
               comment['date_comment'],
-              comment['user'],
+              comment['user_id'],
               comment['video_id'],
             ));
       });
@@ -78,7 +78,7 @@ class _CommentsListState extends State<CommentsList> {
         commentItem['comment_content'],
         commentItem['number_of_likes'],
         commentItem['date_comment'].toDate(),
-        commentItem['user'],
+        commentItem['user_id'],
         commentItem['video_id'],
       );
       _lstComments.add(comment);

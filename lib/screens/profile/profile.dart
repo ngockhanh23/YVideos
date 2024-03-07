@@ -191,8 +191,10 @@ class _AccountInformationState extends State<AccountInformation> {
                     children: [
                       InkWell(
                         onTap: () async {
-                          await Navigator.pushNamed(context, "/edit-profile");
-                          getUserLogin();
+                          await Navigator.pushNamed(context, "/edit-profile").then((value) {
+                            getUserLogin();
+
+                          });
                         },
                         child: Container(
                           height: 45,

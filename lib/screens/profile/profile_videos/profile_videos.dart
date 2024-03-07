@@ -50,7 +50,7 @@ class _ProfileVideosState extends State<ProfileVideos> {
           doc['content_video'],
           doc['date_upload'].toDate(),
           doc['privacy_viewer'],
-          doc['user'],
+          doc['user_id'],
         );
 
         videoList.add(video);
@@ -86,7 +86,7 @@ class _ProfileVideosState extends State<ProfileVideos> {
               ),
               itemCount: _lstVideo.length, // Số lượng item trong GridView
               itemBuilder: (BuildContext context, int index) {
-                if (userLoginID != _lstVideo[index].user['user_id'] && _lstVideo[index].privacyViewer == 1)
+                if (userLoginID != _lstVideo[index].userID && _lstVideo[index].privacyViewer == 1)
                   return Center(
                     child: Text("Đây là video riêng tư"),
                   );

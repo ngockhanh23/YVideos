@@ -46,7 +46,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     List<VideoItem> videoList = [];
 
     querySnapshot.docs.forEach((doc) {
-      Map<String, dynamic> userUpload = doc['user'] as Map<String, dynamic>;
 
       Video video = Video(
         doc.id,
@@ -54,7 +53,7 @@ class _HomeFragmentState extends State<HomeFragment> {
         doc['content_video'],
         doc['date_upload'].toDate(),
         doc['privacy_viewer'],
-        userUpload,
+        doc['user_id']
       );
 
       videoList.add(VideoItem(video: video));

@@ -58,7 +58,7 @@ class _PersonalProfileState extends State<PersonalProfile> {
         centerTitle: true,
         title: Text("Profile") ,
       ),
-      body: account == null ? CircularProgressIndicator() : Profile(account: account!,isUserLogin: statusLoginProfile,),
+      body: account == null ? Container() : Profile(account: account!,isUserLogin: statusLoginProfile,),
     );
   }
 }

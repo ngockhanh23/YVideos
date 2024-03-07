@@ -3,11 +3,12 @@ class Comment{
   String _commentContent;
   int _numberOfLikes;
   DateTime _dateComment;
-  Map _user;
+
+  String _userID;
   String _idVideo;
 
   Comment(this._id, this._commentContent, this._numberOfLikes,
-      this._dateComment, this._user, this._idVideo);
+      this._dateComment, this._userID, this._idVideo);
 
   String get idVideo => _idVideo;
 
@@ -15,11 +16,6 @@ class Comment{
     _idVideo = value;
   }
 
-  Map get user => _user;
-
-  set user(Map value) {
-    _user = value;
-  }
 
   DateTime get dateComment => _dateComment;
 
@@ -37,6 +33,13 @@ class Comment{
 
   set commentContent(String value) {
     _commentContent = value;
+  }
+
+
+  String get userID => _userID;
+
+  set userID(String value) {
+    _userID = value;
   }
 
   String get id => _id;

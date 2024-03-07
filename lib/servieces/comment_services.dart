@@ -31,17 +31,13 @@ class CommentServices {
     Completer<dynamic> completer = Completer<dynamic>();
 
     Account userLogin = await AccountServices.getUserLogin();
-    Object user = {
-      'user_id': userLogin?.userID,
-      'user_name': userLogin?.userName,
-      'avatar_url': userLogin?.avatarUrl,
-    };
+
 
     Map<String, dynamic> commentItem = {
       'comment_content': commentContent,
       'date_comment': DateTime.now(),
       'number_of_likes': 0,
-      'user': user,
+      'user_id' : userLogin?.userID,
       'video_id': videoID
     };
 
@@ -52,7 +48,7 @@ class CommentServices {
       'comment_content': commentContent,
       'date_comment': DateTime.now(),
       'number_of_likes': 0,
-      'user': user,
+      'user_id' : userLogin?.userID,
       'video_id': videoID
     };
 
@@ -68,7 +64,6 @@ class CommentServices {
           'status': false,
           'type': 1,
           'user_id': videoData['user']['user_id'],
-          'user': user,
           'video_id': videoID
         };
         //
