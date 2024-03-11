@@ -10,7 +10,31 @@ import '../models/video.dart';
 
 class VideoServices{
 
+  Future<dynamic> getVideoByID(String videoID) async {
+    try {
+      DocumentSnapshot videoSnapshot = await FirebaseFirestore.instance
+          .collection('Videos')
+          .doc(videoID)
+          .get();
+      if (videoSnapshot.exists) {
 
+          Video video = Video(
+            videoSnapshot.id,
+            videoSnapshot['video_url'],
+            videoSnapshot['content_video'],
+            videoSnapshot['date_upload'].toDate(),
+            videoSnapshot['privacy_viewer'],
+            videoSnapshot['user_id'],
+          );
+
+        return video;
+      } else {
+        print('Tài liệu không tồn tại');
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<List<VideoLikesByUser>> getVideoLikesByVideoID(String videoID) async {
     try {

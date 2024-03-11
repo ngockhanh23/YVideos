@@ -61,9 +61,10 @@ class _CommentsListState extends State<CommentsList> {
               comment['user_id'],
               comment['video_id'],
             ));
+        FocusManager.instance.primaryFocus?.unfocus();
+        commentContent.text = "";
       });
-      FocusManager.instance.primaryFocus?.unfocus();
-          commentContent.text = "";
+
     });
 
   }

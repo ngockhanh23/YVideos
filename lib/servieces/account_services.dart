@@ -176,18 +176,14 @@ class AccountServices {
 
       CollectionReference notifications = FirebaseFirestore.instance.collection('Notifications');
       Account userLogin = await AccountServices.getUserLogin();
-      Object user = {
-        'user_id': userLogin.userID,
-        'avatar_url': userLogin.avatarUrl,
-        'user_name': userLogin.userName,
-      };
+
       Map<String, dynamic> notification = {
         'content': "Đã bắt đầu theo dõi bạn",
         'date_notification': DateTime.now(),
         'status': false,
         'type': 2,
         'user_id': userID,
-        'user': user,
+        'user_notification': userLogin.userID,
         'video_id': ""
       };
 

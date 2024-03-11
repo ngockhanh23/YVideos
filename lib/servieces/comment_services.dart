@@ -57,13 +57,13 @@ class CommentServices {
       DocumentSnapshot videoSnapshot = await FirebaseFirestore.instance.collection('Videos').doc(videoID).get();
       //
       dynamic videoData = videoSnapshot.data() as Map<String, dynamic>;
-      if (userLogin?.userID != videoData['user']['user_id']) {
+      if (userLogin?.userID != videoData['user_id']) {
         Map<String, dynamic> notification = {
           'content': 'Đã bình luận video của bạn: "${commentContent}"',
           'date_notification': DateTime.now(),
           'status': false,
           'type': 1,
-          'user_id': videoData['user']['user_id'],
+          'user_id': videoData['user_id'],
           'video_id': videoID
         };
         //

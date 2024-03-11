@@ -1,19 +1,27 @@
 class NotificationUser{
   String _id;
-  Map _user;
+  String _userID;
+  String _userNotification;
   int _type;
   bool _status;
   String _content;
   String _videoID;
   DateTime _dateNotification;
 
-  NotificationUser(this._id, this._user, this._type, this._status, this._content,
+  NotificationUser(this._id, this._userID,this._userNotification, this._type, this._status, this._content,
       this._videoID, this._dateNotification);
 
   DateTime get dateNotification => _dateNotification;
 
   set dateNotification(DateTime value) {
     _dateNotification = value;
+  }
+
+
+  String get userNotification => _userNotification;
+
+  set userNotification(String value) {
+    _userNotification = value;
   }
 
   String get videoID => _videoID;
@@ -41,10 +49,10 @@ class NotificationUser{
     _status = value;
   }
 
-  Map get user => _user;
+  String get userID => _userID;
 
-  set user(Map value) {
-    _user = value;
+  set user(String value) {
+    _userID = value;
   }
 
   String get id => _id;

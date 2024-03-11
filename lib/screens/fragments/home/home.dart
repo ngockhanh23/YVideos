@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe/flutter_swipe.dart';
 import 'package:y_videos/components/video_item/video_item.dart';
-import 'package:y_videos/data/data.dart';
-
 import '../../../models/video.dart';
 
 class HomeFragment extends StatefulWidget{

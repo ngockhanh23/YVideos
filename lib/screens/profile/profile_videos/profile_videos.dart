@@ -38,7 +38,7 @@ class _ProfileVideosState extends State<ProfileVideos> {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('Videos')
-          .where('user.user_id', isEqualTo: widget.userID)
+          .where('user_id', isEqualTo: widget.userID)
           .get();
 
       List<Video> videoList = [];

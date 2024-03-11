@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/screens/fragments/notification/notification_item.dart';
 import 'package:y_videos/models/notification.dart';
+import 'package:y_videos/servieces/notification_services.dart';
 
 class NotificationFragment extends StatefulWidget {
   @override
@@ -19,73 +20,16 @@ class _NotificationFragmentState extends State<NotificationFragment> {
     super.initState();
   }
 
-  // getUserLogin() async{
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userID = prefs.getString('user_id') ?? "";
-  //
-  // }
 
-  // fetchNotificationData() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String userID = prefs.getString('user_id') ?? "";
-  //
-  //   print('user đăng nhập : ' + userID);
-  //
-  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Users').where('userID', isEqualTo: userID).limit(1).get();
-  //   if (querySnapshot.docs.isNotEmpty) {
-  //     var userData = querySnapshot.docs[0].data() as Map<String, dynamic>;
-  //     List<dynamic> notifications = userData['notifications'] ?? [];
-  //     print(notifications);
-  //
-  //     notifications.forEach((notification) {
-  //       NotificationUser notificationUser = NotificationUser(
-  //         "notification.",
-  //         notification['user'],
-  //         notification['type'],
-  //         notification['status'],
-  //         notification['content'],
-  //         notification['video_id'],
-  //         notification['date_notification'].toDate(), // Chuyển đổi thành đối tượng DateTime
-  //       );
-  //
-  //       // Thêm đối tượng vào danh sách notificationUsers
-  //       // print(notificationUser);
-  //       lstNotifications.add(notificationUser);
-  //     });
-  //     setState(() {
-  //       isLstNotiLoading = false;
-  //     });
-  //   } else {
-  //     print('Không tìm thấy người dùng với email này.');
-  //   }
-  // }
   fetchNotificationData() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String userID = prefs.getString('user_id') ?? "";
-      QuerySnapshot notificationSnapshot = await FirebaseFirestore.instance.collection('Notifications')
-          .where('user_id', isEqualTo: userID).get();
-
-      // List<NotificationUser> lstNotifications = [];
-      notificationSnapshot.docs.forEach((doc) {
-        // Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        NotificationUser notificationUser = NotificationUser(
-          doc.id,
-          doc['user'],
-          doc['type'],
-          doc['status'],
-          doc['content'],
-          doc['video_id'],
-          doc['date_notification'].toDate(),
-        );
-        lstNotifications.add(notificationUser);
-      });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userID = prefs.getString('user_id') ?? "";
+    NotificationServices().fetchNotificationByUserID(userID).then((result) {
       setState(() {
+        lstNotifications = result;
         isLstNotiLoading = false;
       });
-    } catch (e) {
-      print('$e');
-    }
+    });
   }
 
   @override
