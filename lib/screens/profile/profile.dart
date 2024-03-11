@@ -99,8 +99,7 @@ class _AccountInformationState extends State<AccountInformation> {
   getAccountFollowing() {
 
     FirebaseFirestore.instance.collection('Follows').where('follower_id', isEqualTo: widget.account.userID).get().then((QuerySnapshot querySnapshot) {
-      for (var doc in querySnapshot.docs) {        // print(doc.data());
-        // lstFollowingTemp.add(Follow(doc.id, doc['follower_id'], doc['user_id'], doc['notification_id']));
+      for (var doc in querySnapshot.docs) {
         followingCount++;
       }
       setState(() {

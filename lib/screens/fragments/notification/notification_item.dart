@@ -74,7 +74,7 @@ class _NotificationItemState extends State<NotificationItem> {
     } else if(widget.notificationUser.type == 2){
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FollowerList()));
+          MaterialPageRoute(builder: (context) => FollowerList(userID: 'ngc_knh',)));
     }
   }
 

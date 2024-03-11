@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -225,7 +224,26 @@ class AccountServices {
     }
   }
 
+  Future<List<Account>> getFollowerListByUserID(String UserID) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Follows')
+          .where('user_id', isEqualTo: UserID)
+          .get();
+      List<Account> lstAccount = [];
 
+      // Sử dụng Future.forEach để chờ tất cả các lời hứa được giải quyết
+      await Future.forEach(querySnapshot.docs, (doc) async {
+        Account account = await getAccountByUserID(doc['follower_id']);
+        lstAccount.add(account);
+      });
+
+      return lstAccount;
+    } catch (e) {
+      print('Lỗi khi lấy danh sách follower: $e');
+      return []; // Trả về một danh sách trống trong trường hợp xảy ra lỗi
+    }
+  }
 
   static getUserLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
