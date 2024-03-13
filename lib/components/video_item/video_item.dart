@@ -252,7 +252,7 @@ class _VideoItemState extends State<VideoItem> {
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
                                     image: NetworkImage(
-                                      _userUpload!.avatarUrl,
+                                      _userUpload == null ? '' : _userUpload!.avatarUrl,
                                     ),
                                     fit: BoxFit.cover,
                                   ),
@@ -389,7 +389,7 @@ class _VideoItemState extends State<VideoItem> {
                   children: [
                     InkWell(
                       onTap: (){},
-                      child: Text(_userUpload!.userID, style: TextStyle(
+                      child: Text(_userUpload == null ? '' : _userUpload!.userID, style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold

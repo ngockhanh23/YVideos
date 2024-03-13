@@ -158,6 +158,31 @@ class AccountServices {
     }
   }
 
+  Future<String> checkFollowExists(String followerId, String userId) async {
+    try {
+      // Thực hiện truy vấn trong Firestore để kiểm tra sự tồn tại của một cặp (follower_id, user_id)
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Follows')
+          .where('follower_id', isEqualTo: followerId)
+          .where('user_id', isEqualTo: userId)
+          .get();
+
+      // Nếu có ít nhất một tài liệu trong kết quả trả về, đồng nghĩa với việc cặp (follower_id, user_id) tồn tại
+      if (querySnapshot.docs.isNotEmpty) {
+        // Trả về ID của tài liệu đầu tiên trong kết quả trả về
+        return querySnapshot.docs.first.id;
+      } else {
+        // Trả về chuỗi rỗng nếu không tìm thấy cặp (follower_id, user_id)
+        return '';
+      }
+    } catch (e) {
+      // Xử lý ngoại lệ nếu có lỗi xảy ra
+      print('Error checking follow: $e');
+      return '';
+    }
+  }
+
+
   Future<String> createFollow(String followerID, String userID) async {
     Completer<String> completer = Completer<String>();
 
@@ -242,6 +267,45 @@ class AccountServices {
     } catch (e) {
       print('Lỗi khi lấy danh sách follower: $e');
       return []; // Trả về một danh sách trống trong trường hợp xảy ra lỗi
+    }
+  }
+
+  Future<List<Account>> getListUsersBySearchKey(String searchKey)async{
+    try {
+
+      QuerySnapshot userNameQuery = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('userName', isGreaterThanOrEqualTo: searchKey)
+          .where('userName', isLessThan: searchKey + 'z')
+          .get();
+
+      QuerySnapshot userIdQuery = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('userID', isEqualTo: searchKey)
+          .get();
+
+      List<DocumentSnapshot> mergedResults = [];
+      mergedResults.addAll(userNameQuery.docs);
+      // mergedResults.addAll(userName2Query.docs);
+      mergedResults.addAll(userIdQuery.docs);
+      // mergedResults.sort((a, b) => a['content_video'].compareTo(b['content_video']));
+
+      List<Account> lstAccount =[];
+      for (var doc in mergedResults) {
+        Account account = Account(
+            doc['userID'],
+            doc['userName'],
+            doc['avatarUrl'],
+            doc['email'],
+            '');
+        lstAccount.add(account);
+      }
+      // Account account = new Account('_userID', '_userName', '_avatarUrl', '_email', '_password');
+      // lstAccount.add(account);
+      return lstAccount;
+
+    } catch (e) {
+      return [];
     }
   }
 

@@ -1,6 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:y_videos/components/follow_button/follow_button.dart';
+import 'package:y_videos/models/account.dart';
 
-class AccountResultItem extends StatefulWidget{
+class AccountResultItem extends StatefulWidget {
+  Account account;
+  String userLoginID;
+
+  AccountResultItem(
+      {super.key, required this.account, required this.userLoginID});
+
   @override
   State<AccountResultItem> createState() => _AccountResultItemState();
 }
@@ -12,98 +22,60 @@ class _AccountResultItemState extends State<AccountResultItem> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return InkWell(
-      onTap: (){},
+      onTap: () {},
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 35,
-                  backgroundImage: NetworkImage(
-                    'https://www.meme-arsenal.com/memes/4408af6c9803cb3f320ecc468b3abbfa.jpg',
+            Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 35,
+                    backgroundImage: NetworkImage(
+                      widget.account.avatarUrl,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Ngọc Khánh",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 18,
+                  Container(
+                    margin: EdgeInsets.only(left: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.account.userName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "ngc_knh",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black54
+                        Text(
+                          widget.account.userID,
+                          style: TextStyle(fontSize: 15, color: Colors.black54),
                         ),
-                      ),
-                      Text(
-                        "150 follower   20 video",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        // Text(
+                        //   "150 follower   20 video",
+                        //   style: TextStyle(
+                        //       fontSize: 15,
+                        //       color: Colors.black54
+                        //   ),
+                        // )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-
-            !this._isFollowed ? InkWell(
-              onTap: () {
-                setState(() {
-                  this._isFollowed = true;
-                });
-              },
-              child: Container(
-                width: 110,
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(5)),
-                child: Center(
-                    child: Text(
-                      "Follow",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    )),
-              ),
-            ):
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    this._isFollowed = false;
-                  });
-                },
-                child: Container(
-                  width: 110,
-                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                      child: Text(
-                    "Đang Follow",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
-                  )),
-                ),
-              ),
+            widget.account.userID == widget.userLoginID
+                ? Container()
+                : Expanded(
+                    flex: 1,
+                    child: FollowButton(
+                        userID: widget.account.userID,
+                        userLoginID: widget.userLoginID))
           ],
         ),
       ),

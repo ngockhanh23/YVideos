@@ -2,18 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:y_videos/components/follow_button/follow_button.dart';
 import 'package:y_videos/screens/profile/profile_videos/profile_videos.dart';
 import 'package:y_videos/servieces/account_services.dart';
 import '../../models/account.dart';
-
 
 class Profile extends StatelessWidget {
   Account account;
   bool isUserLogin;
 
   Profile({super.key, required this.account, required this.isUserLogin});
-
-
 
   // Account? account ;
 
@@ -48,7 +46,8 @@ class AccountInformation extends StatefulWidget {
   Account account;
   bool isUserLogin;
 
-  AccountInformation({super.key, required this.account, required this.isUserLogin});
+  AccountInformation(
+      {super.key, required this.account, required this.isUserLogin});
 
   @override
   State<AccountInformation> createState() => _AccountInformationState();
@@ -62,9 +61,7 @@ class _AccountInformationState extends State<AccountInformation> {
   // List<Follow> lstFollings = [];
   // Map<String, dynamic> user = {};
   // String? userLoginID;
-  Account? userLogin ;
-  bool isFollowingUser = false;
-  String? idFollowOfUserLogin;
+  Account? userLogin;
 
   @override
   void initState() {
@@ -74,19 +71,20 @@ class _AccountInformationState extends State<AccountInformation> {
     super.initState();
   }
 
-  getUserLogin()  async {
+  getUserLogin() async {
     userLogin = await AccountServices.getUserLogin();
   }
 
   getAccountFollower() {
-    FirebaseFirestore.instance.collection('Follows').where('user_id', isEqualTo: widget.account.userID).get().then((QuerySnapshot querySnapshot) {
+    FirebaseFirestore.instance
+        .collection('Follows')
+        .where('user_id', isEqualTo: widget.account.userID)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
-        if(doc['follower_id'] == userLogin?.userID && doc['user_id'] == widget.account.userID){
-          idFollowOfUserLogin = doc.id;
-          isFollowingUser = true;
-        }
-        followerCount ++;
-        // lstFollowsTemp.add(Follow(doc.id, doc['follower_id'], doc['user_id'],doc['notification_id']));
+        if (doc['follower_id'] == userLogin?.userID &&
+            doc['user_id'] == widget.account.userID) {}
+        followerCount++;
       }
       setState(() {
         // lstFollows = lstFollowsTemp;
@@ -97,21 +95,19 @@ class _AccountInformationState extends State<AccountInformation> {
   }
 
   getAccountFollowing() {
-
-    FirebaseFirestore.instance.collection('Follows').where('follower_id', isEqualTo: widget.account.userID).get().then((QuerySnapshot querySnapshot) {
+    FirebaseFirestore.instance
+        .collection('Follows')
+        .where('follower_id', isEqualTo: widget.account.userID)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
         followingCount++;
       }
-      setState(() {
-
-      });
+      setState(() {});
     }).catchError((error) {
       print("Error querying documents: $error");
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +143,8 @@ class _AccountInformationState extends State<AccountInformation> {
                   children: [
                     Text(
                       followingCount.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     const Text(
                       "Đang Follow",
@@ -159,7 +156,8 @@ class _AccountInformationState extends State<AccountInformation> {
                   children: [
                     Text(
                       followerCount.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     const Text(
                       "Follower",
@@ -171,7 +169,8 @@ class _AccountInformationState extends State<AccountInformation> {
                   children: [
                     Text(
                       "91",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     const Text(
                       "Likes",
@@ -190,19 +189,22 @@ class _AccountInformationState extends State<AccountInformation> {
                     children: [
                       InkWell(
                         onTap: () async {
-                          await Navigator.pushNamed(context, "/edit-profile").then((value) {
+                          await Navigator.pushNamed(context, "/edit-profile")
+                              .then((value) {
                             getUserLogin();
-
                           });
                         },
                         child: Container(
                           height: 45,
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black12)),
                           child: const Center(
                             child: Text(
                               "Chỉnh sửa hồ sơ",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
                             ),
                           ),
                         ),
@@ -213,8 +215,10 @@ class _AccountInformationState extends State<AccountInformation> {
                       InkWell(
                         child: Container(
                           height: 45,
-                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black12)),
                           child: Center(
                             child: Icon(Icons.bookmark_border_outlined),
                           ),
@@ -223,62 +227,15 @@ class _AccountInformationState extends State<AccountInformation> {
                     ],
                   ),
                 )
-              : Container(
-            padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-            child: InkWell(
-              onTap: () {
-                if (!isFollowingUser) {
-
-                  AccountServices().createFollow(userLogin!.userID, widget.account.userID).then((followID) {
-                    idFollowOfUserLogin = followID;
-                    setState(() {
-                      isFollowingUser = true;
-                    });
-                  }).catchError((error) {
-                    // Xử lý khi có lỗi xảy ra
-                  });
-
-                } else {
-
-
-                  AccountServices().deleteFollow(idFollowOfUserLogin!).then((_) {
-                    setState(() {
-                      isFollowingUser = false;
-                    });
-                  }).catchError((error) {
-                    // Xử lý khi có lỗi xảy ra
-                  });
-                }
-              },
-              child: Container(
-                height: 45,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(border: Border.all(color: Colors.black12), color: !isFollowingUser ? Colors.redAccent : CupertinoColors.white),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        !isFollowingUser ? "Theo dõi" : "Bỏ theo dõi",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: !isFollowingUser ? Colors.white : Colors.black),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        !isFollowingUser ? CupertinoIcons.plus : CupertinoIcons.xmark,
-                        color: !isFollowingUser ? Colors.white : Colors.black,
-                        size: 20,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )
+              : Center(
+                  child: SizedBox(
+                    width: 200,
+                      child: FollowButton(
+                  userID: widget.account.userID,
+                  userLoginID: userLogin!.userID,
+                )))
         ],
       ),
     );
   }
 }
-

@@ -9,7 +9,7 @@ class SearchResults extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -25,7 +25,7 @@ class SearchResults extends StatelessWidget{
         body: TabBarView(
           children: [
             VideoResults(searchKey: searchKey,),
-            AccountResults(),
+            AccountResults(searchKey: searchKey,),
             // Thêm TabBarView khác nếu cần
           ],
         )
