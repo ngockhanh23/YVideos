@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/screens/fragments/notification/notification_item.dart';
@@ -11,26 +10,31 @@ class NotificationFragment extends StatefulWidget {
 }
 
 class _NotificationFragmentState extends State<NotificationFragment> {
-  List<NotificationUser> lstNotifications = [];
+  List<NotificationUser> _lstNotifications = [];
   bool isLstNotiLoading = true;
+  int _countUnreadNotification = 0;
+
 
   @override
   void initState() {
-    fetchNotificationData();
+    _fetchNotificationData();
     super.initState();
   }
 
 
-  fetchNotificationData() async {
+  _fetchNotificationData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userID = prefs.getString('user_id') ?? "";
     NotificationServices().fetchNotificationByUserID(userID).then((result) {
       setState(() {
-        lstNotifications = result;
+        _countUnreadNotification = result.where((notification) => notification.status == false).length;
+        _lstNotifications = result;
         isLstNotiLoading = false;
       });
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +53,29 @@ class _NotificationFragmentState extends State<NotificationFragment> {
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
-            ElevatedButton(onPressed: () {}, child: Text('Làm mới thông báo')),
+            // ElevatedButton(onPressed: () {}, child: Text('Làm mới thông báo')),
             // NotificationItem()
-            const Divider(),
+            // const Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Text('Bạn có ', style: TextStyle(fontSize: 18),),
+                    Text(_countUnreadNotification.toString(), style: TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),),
+                    const Text(' thông báo chưa đọc', style: TextStyle(fontSize: 18)),
+
+                  ],
+                ),
+                InkWell(
+                  child: const Text('Làm mới', style: TextStyle(fontSize: 18),),
+                )
+              ],
+            ),
             if(isLstNotiLoading)
               const CircularProgressIndicator()
             else
-            if(lstNotifications.isEmpty)
+            if(_lstNotifications.isEmpty)
               const Center(
                 child: Column(
                   children: [
@@ -67,7 +87,7 @@ class _NotificationFragmentState extends State<NotificationFragment> {
             else
               Column(
                 // mainAxisAlignment: MainAxisAlignment.start,
-                children: lstNotifications.reversed.map((notification) => NotificationItem(notificationUser: notification)).toList(),
+                children: _lstNotifications.reversed.map((notification) => NotificationItem(notificationUser: notification)).toList(),
               )
 
           ],

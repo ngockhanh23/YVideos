@@ -39,7 +39,7 @@ class _VideoPlayerReviewState extends State<VideoPlayerReview> {
               aspectRatio: _controller.value.aspectRatio,
               child: VideoPlayer(_controller),
             )
-          : CircularProgressIndicator(),
+          : Container(),
     );
   }
 }

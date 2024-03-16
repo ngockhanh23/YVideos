@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:y_videos/models/video_likes.dart';
 import 'package:y_videos/servieces/account_services.dart';
+import 'package:y_videos/servieces/notification_services.dart';
 
 import '../models/account.dart';
 import '../models/video.dart';
@@ -95,7 +96,9 @@ class VideoServices{
     }
   }
 
-  Future<void> uploadVideoContent(String filePath, String content, int privacyViewer) async {
+  Future<dynamic> uploadVideoContent(String filePath, String content, int privacyViewer) async {
+    Video video = Video.empty();
+
     try {
       File videoFile = File(filePath);
       Account userLogin = await AccountServices.getUserLogin();
@@ -119,12 +122,33 @@ class VideoServices{
           'user_id': userLogin.userID,
           'video_url' : videoURL
           // Thêm các trường dữ liệu khác nếu cần thiết
+        }).then((DocumentReference docRef) async {
+          // Lấy thông tin của tài liệu vừa được thêm
+          DocumentSnapshot snapshot = await docRef.get();
+
+          // In ra tất cả các thuộc tính của tài liệu
+          Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+          // video = Video(docRef.id, data['video_url'], data['content_video'], data['date_upload'], data['privacy_viewer'], data['user_id']);
+          video.id = docRef.id.toString();
+          video.videoUrl = data['video_url'];
+          video.contentVideo = data['content_video'];
+          video.dateUpload = data['date_upload'].toDate();
+          video.privacyViewer = data['privacy_viewer'];
+          video.userID = data['user_id'];
+
+
+          return video;
+
+          print(video);
         });
 
       });
-
+      return video;
 
     } catch (e) {
+      // return Video('_id', '_videoUrl', '_contentVideo', DateTime.now(), 1, '_userID');
+      return null;
       print('Lỗi khi upload video: $e');
     }
 

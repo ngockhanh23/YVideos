@@ -111,131 +111,137 @@ class _AccountInformationState extends State<AccountInformation> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 60,
-            backgroundImage: NetworkImage(
-              widget.account.avatarUrl.toString(),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            '@${widget.account.userID}',
-            style: const TextStyle(fontSize: 16),
-          ),
-          Text(
-            widget.account.userName,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return userLogin == null
+        ? Container()
+        : Container(
+            child: Column(
               children: [
-                Column(
-                  children: [
-                    Text(
-                      followingCount.toString(),
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    const Text(
-                      "Đang Follow",
-                      style: TextStyle(color: Colors.black54),
-                    )
-                  ],
+                CircleAvatar(
+                  radius: 60,
+                  backgroundImage: NetworkImage(
+                    widget.account.avatarUrl.toString(),
+                  ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      followerCount.toString(),
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    const Text(
-                      "Follower",
-                      style: TextStyle(color: Colors.black54),
-                    )
-                  ],
+                const SizedBox(
+                  height: 10,
                 ),
-                Column(
-                  children: [
-                    Text(
-                      "91",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    const Text(
-                      "Likes",
-                      style: TextStyle(color: Colors.black54),
-                    )
-                  ],
+                Text(
+                  '@${widget.account.userID}',
+                  style: const TextStyle(fontSize: 16),
                 ),
-              ],
-            ),
-          ),
-          widget.isUserLogin
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                Text(
+                  widget.account.userName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          await Navigator.pushNamed(context, "/edit-profile")
-                              .then((value) {
-                            getUserLogin();
-                          });
-                        },
-                        child: Container(
-                          height: 45,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black12)),
-                          child: const Center(
-                            child: Text(
-                              "Chỉnh sửa hồ sơ",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
+                      Column(
+                        children: [
+                          Text(
+                            followingCount.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
                           ),
-                        ),
+                          const Text(
+                            "Đang Follow",
+                            style: TextStyle(color: Colors.black54),
+                          )
+                        ],
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        child: Container(
-                          height: 45,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black12)),
-                          child: Center(
-                            child: Icon(Icons.bookmark_border_outlined),
+                      Column(
+                        children: [
+                          Text(
+                            followerCount.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
                           ),
-                        ),
+                          const Text(
+                            "Follower",
+                            style: TextStyle(color: Colors.black54),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "91",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          const Text(
+                            "Likes",
+                            style: TextStyle(color: Colors.black54),
+                          )
+                        ],
                       ),
                     ],
                   ),
-                )
-              : Center(
-                  child: SizedBox(
-                    width: 200,
-                      child: FollowButton(
-                  userID: widget.account.userID,
-                  userLoginID: userLogin!.userID,
-                )))
-        ],
-      ),
-    );
+                ),
+                widget.isUserLogin
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                await Navigator.pushNamed(
+                                        context, "/edit-profile")
+                                    .then((value) {
+                                  getUserLogin();
+                                });
+                              },
+                              child: Container(
+                                height: 45,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black12)),
+                                child: const Center(
+                                  child: Text(
+                                    "Chỉnh sửa hồ sơ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            InkWell(
+                              child: Container(
+                                height: 45,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black12)),
+                                child: Center(
+                                  child: Icon(Icons.bookmark_border_outlined),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Center(
+                        child: SizedBox(
+                            width: 200,
+                            child: FollowButton(
+                              userID: widget.account.userID,
+                              userLoginID: userLogin!.userID,
+                            )))
+              ],
+            ),
+          );
   }
 }

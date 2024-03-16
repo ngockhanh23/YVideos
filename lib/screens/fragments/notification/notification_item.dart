@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/components/thumbnail_video/thumbnail_video.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:y_videos/models/notification.dart';
@@ -14,6 +15,7 @@ import '../../video_item_screen/video_item_screen.dart';
 
 class NotificationItem extends StatefulWidget {
   NotificationUser notificationUser;
+  // Function reset
 
   NotificationItem({super.key, required this.notificationUser});
 
@@ -24,18 +26,25 @@ class NotificationItem extends StatefulWidget {
 class _NotificationItemState extends State<NotificationItem> {
   Video? _video;
   Account? _userNotification;
+  String _userLoginID = '';
 
   @override
   void initState() {
     // getVideo();
     if (widget.notificationUser.type == 1) {
       _getVideo();
+    }else if(widget.notificationUser.type == 2){
+      _getUserLoginID();
     }
     _getUser();
 
     super.initState();
   }
 
+  _getUserLoginID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _userLoginID = prefs.getString('user_id') ?? "";
+  }
   _getVideo() async {
     if (widget.notificationUser.type == 1) {
       VideoServices().getVideoByID(widget.notificationUser.videoID).then((result) {
@@ -74,7 +83,7 @@ class _NotificationItemState extends State<NotificationItem> {
     } else if(widget.notificationUser.type == 2){
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FollowerList(userID: 'ngc_knh',)));
+          MaterialPageRoute(builder: (context) => FollowerList(userID: _userLoginID,)));
     }
   }
 

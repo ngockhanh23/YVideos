@@ -34,6 +34,29 @@ class NotificationServices {
     }
   }
 
+  Future<void> addNotification(String userID, String userNotification, String content, int type, String videoID) async {
+
+
+    try {
+      Map<String, dynamic> notification = {
+        'content': content,
+        'date_notification': DateTime.now(),
+        'status': false,
+        'type': type,
+        'user_id': userID,
+        'user_notification': userNotification,
+        'video_id': videoID
+      };
+
+      // Thêm thông báo vào Firestore
+      await FirebaseFirestore.instance.collection('Notifications').add(notification);
+
+      print('Thông báo đã được thêm thành công.');
+    } catch (error) {
+      print('Lỗi khi thêm thông báo: $error');
+    }
+  }
+
   Future<void> setStatusNotification(String idNotification) async {
     await FirebaseFirestore.instance.collection('Notifications').doc(idNotification).update({
       'status' : true

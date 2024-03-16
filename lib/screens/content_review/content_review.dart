@@ -1,9 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
+import 'package:y_videos/components/dialog_helper/dialog_helper.dart';
 import 'package:y_videos/screens/content_review/VideoPlayerReview.dart';
+import 'package:y_videos/servieces/account_services.dart';
+import 'package:y_videos/servieces/notification_services.dart';
 import 'package:y_videos/servieces/video_sevices.dart';
+
+import '../../models/video.dart';
 
 class ContentReview extends StatefulWidget {
   final String videoPath;
@@ -22,6 +27,9 @@ class _ContentReviewState extends State<ContentReview> {
   int _privacyViewer = 0;
   String _privacyString = "Mọi người";
 
+  // bool _videoUploaded = false;
+  Video? _videoUploaded;
+
   @override
   void initState() {
     super.initState();
@@ -32,9 +40,47 @@ class _ContentReviewState extends State<ContentReview> {
       });
   }
 
+  _handleUploadVideo() {
+    // print('hahaha');
+
+    _showUploadingDialog();
+    VideoServices()
+        .uploadVideoContent(
+            widget.videoPath, _contentController.text, _privacyViewer)
+        .then((video) => {
+              _videoUploaded = video,
+              Navigator.pop(context),
+              DialogHelper.successToastSnackbar(
+                  context, 'Video của bạn đã được đăng tải', 3),
+              // if (_videoUploaded != null)
+              //   {
+              //     _addNotificaitonFollowUser(),
+              //   },
+              Navigator.pop(context)
+            });
+  }
+
+  _addNotificaitonFollowUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userLoginID = prefs.getString('user_id') ?? "";
+
+    AccountServices()
+        .getFollowerListByUserID(userLoginID)
+        .then((lstFollower) async {
+      await Future.forEach(lstFollower, (account) async {
+        // Gọi hàm addNotification với từ khóa await
+        await NotificationServices().addNotification(account.userID,
+            userLoginID, 'Đã đăng tải một video', 1, _videoUploaded!.id);
+      });
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
+    if (_videoUploaded != null && _privacyViewer == 0) {
+      _addNotificaitonFollowUser();
+    }
     _controller.dispose();
   }
 
@@ -69,7 +115,10 @@ class _ContentReviewState extends State<ContentReview> {
                 controller: _contentController,
                 maxLines: null,
                 decoration: const InputDecoration(
-                    hintText: "Tạo nội dung để cung cấp nhiều thông tin hơn", hintStyle: TextStyle(color: Colors.grey), border: InputBorder.none),
+                    hintText:
+                        "Tạo nội dung để cung cấp nhiều thông tin hơn",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none),
               ),
             ),
             const Divider(
@@ -80,13 +129,16 @@ class _ContentReviewState extends State<ContentReview> {
               child: ListTile(
                 onTap: () => _showPrivacyOption(),
                 leading: Icon(Icons.remove_red_eye_outlined),
-                title: Text("Đối tượng", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                title: Text("Đối tượng",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       _privacyString,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.normal),
                     ),
                     Icon(Icons.arrow_forward_ios_rounded),
                   ],
@@ -96,7 +148,8 @@ class _ContentReviewState extends State<ContentReview> {
             ListTile(
               onTap: () {},
               leading: const Icon(Icons.tag_sharp),
-              title: const Text("Hashtag", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              title: const Text("Hashtag",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               trailing: const Icon(Icons.arrow_forward_ios_rounded),
             )
           ],
@@ -121,7 +174,8 @@ class _ContentReviewState extends State<ContentReview> {
                         border: Border.all(
                           color: Colors.black26,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
                     child: const Icon(Icons.arrow_back_ios_new_outlined),
                   ),
                 )),
@@ -131,13 +185,7 @@ class _ContentReviewState extends State<ContentReview> {
             Expanded(
                 flex: 4,
                 child: ElevatedButton(
-                  onPressed: () {
-                    _showUploadingDialog();
-
-                    VideoServices()
-                        .uploadVideoContent(widget.videoPath, _contentController.text, _privacyViewer)
-                        .then((_) => {Navigator.pop(context), showSnackBar(context), Navigator.pop(context)});
-                  },
+                  onPressed: () => _handleUploadVideo(),
                   child: Row(
                     children: [
                       const Spacer(),
@@ -153,29 +201,14 @@ class _ContentReviewState extends State<ContentReview> {
                     ],
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.redAccent),
                   ),
                 )),
           ],
         ),
       ),
     );
-  }
-
-  void showSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
-      content: Text('Đã đăng tải video của bạn'),
-      duration: Duration(seconds: 3),
-      backgroundColor: Colors.green,
-      // action: SnackBarAction(
-      //   label: Text('đóng'),
-      //
-      //   onPressed: () {
-      //     // Some action to take when user presses the action button
-      //   },
-      // ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   _showPrivacyOption() {
@@ -285,12 +318,14 @@ class _ContentReviewState extends State<ContentReview> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white, // Màu nền của hộp thoại
+          backgroundColor: Colors.white,
+          // Màu nền của hộp thoại
           shape: RoundedRectangleBorder(
             // Tạo hình dạng cho hộp thoại
             borderRadius: BorderRadius.circular(10),
           ),
-          contentPadding: EdgeInsets.all(20.0), // Định dạng kích thước của nội dung
+          contentPadding: EdgeInsets.all(20.0),
+          // Định dạng kích thước của nội dung
           content: const SizedBox(
             height: 150, // Chiều cao của nội dung
             width: 300, // Chiều rộng của nội dung
@@ -302,7 +337,8 @@ class _ContentReviewState extends State<ContentReview> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text("Đang tải lên video của bạn...", style: TextStyle(fontSize: 20)),
+                const Text("Đang tải lên video của bạn...",
+                    style: TextStyle(fontSize: 20)),
               ],
             ),
           ),

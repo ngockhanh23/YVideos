@@ -87,8 +87,17 @@ class _ProfileVideosState extends State<ProfileVideos> {
               itemCount: _lstVideo.length, // Số lượng item trong GridView
               itemBuilder: (BuildContext context, int index) {
                 if (userLoginID != _lstVideo[index].userID && _lstVideo[index].privacyViewer == 1)
-                  return Center(
-                    child: Text("Đây là video riêng tư"),
+                  return  Container(
+                    decoration: BoxDecoration(
+
+                    ),
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.lock_outline_rounded),
+                        Text("Đây là video riêng tư"),
+                      ],
+                    ),
                   );
                 else
                   return ThumbnailVideo(

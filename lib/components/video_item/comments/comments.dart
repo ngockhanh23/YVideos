@@ -151,7 +151,7 @@ class _CommentsListState extends State<CommentsList> {
                     Expanded(
                       flex: 1,
                       child: userLogin == null
-                          ? CircularProgressIndicator()
+                          ? Container()
                           : CircleAvatar(
                               backgroundImage: NetworkImage(
                                 userLogin!.avatarUrl,

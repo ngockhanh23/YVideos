@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:y_videos/servieces/notification_services.dart';
 import '../models/account.dart';
 import 'account_services.dart';
 
@@ -58,21 +59,28 @@ class CommentServices {
       //
       dynamic videoData = videoSnapshot.data() as Map<String, dynamic>;
       if (userLogin?.userID != videoData['user_id']) {
-        Map<String, dynamic> notification = {
-          'content': 'Đã bình luận video của bạn: "${commentContent}"',
-          'date_notification': DateTime.now(),
-          'status': false,
-          'type': 1,
-          'user_id': videoData['user_id'],
-          'video_id': videoID
-        };
-        //
-        await FirebaseFirestore.instance.collection('Notifications').add(notification)
-            .catchError((error) {
-          completer.completeError(error);
-        }).catchError((error){
-          completer.completeError(error);
-        });
+        // Map<String, dynamic> notification = {
+        //   'content': 'Đã bình luận video của bạn: "${commentContent}"',
+        //   'date_notification': DateTime.now(),
+        //   'status': false,
+        //   'type': 1,
+        //   'user_id': videoData['user_id'],
+        //   'user_notification' : userLogin?.userID,
+        //   'video_id': videoID
+        // };
+        // //
+        // await FirebaseFirestore.instance.collection('Notifications').add(notification)
+        //     .catchError((error) {
+        //   completer.completeError(error);
+        // }).catchError((error){
+        //   completer.completeError(error);
+        // });
+        NotificationServices().addNotification(
+            videoData['user_id'],
+            userLogin?.userID.toString() ?? "",
+            'Đã bình luận video của bạn: "${commentContent}"',
+            1,
+            videoID);
       }
     return completer.future;
   }
