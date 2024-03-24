@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +21,27 @@ class AccountServices {
           userData['userEmail'].toString(),
           "",
         );
+
+      // authService.account = account; // Nếu cần thiết
+    } else {
+      return Account.empty();
+    }
+  }
+
+  Future<Account> getAccountByUserEmail (String userEmail) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Users').where('email', isEqualTo: userEmail).limit(1).get();
+    if (querySnapshot.docs.isNotEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('id_user_doc', querySnapshot.docs.first.id);
+      var userData = querySnapshot.docs[0].data() as Map<String, dynamic>;
+
+      return Account(
+        userData['userID'].toString(),
+        userData['userName'].toString(),
+        userData['avatarUrl'].toString(),
+        userData['userEmail'].toString(),
+        "",
+      );
 
       // authService.account = account; // Nếu cần thiết
     } else {
@@ -306,6 +328,76 @@ class AccountServices {
 
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<Account> signInWithGoogle() async {
+    try {
+      FirebaseAuth _auth = FirebaseAuth.instance;
+      GoogleSignIn googleSignIn = GoogleSignIn();
+
+      // Đăng nhập sử dụng Google Sign-In
+      GoogleSignInAccount? gUser = await googleSignIn.signIn();
+
+      if (gUser != null) {
+        // Lấy thông tin xác thực từ tài khoản Google
+        GoogleSignInAuthentication gAuth = await gUser.authentication;
+        OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: gAuth.accessToken,
+          idToken: gAuth.idToken,
+        );
+
+        // Đăng nhập vào Firebase với thông tin xác thực từ Google
+        UserCredential authResult  =  await _auth.signInWithCredential(credential);
+        User? user = authResult .user;
+        String displayName = user?.displayName ?? '';
+        String email = user?.email ?? '';
+        String photoURL = user?.photoURL ?? '';
+
+        // Lấy thông tin account từ email
+        Account accountResult = await getAccountByUserEmail(email);
+        // Gán userID cho account
+        Account account = Account(accountResult.userID, displayName, photoURL, email, '');
+
+        // Trả về account đã có userID
+        return account;
+      } else {
+        // Trả về account rỗng
+        return Account.empty();
+      }
+    } catch (error) {
+      print("Lỗi khi đăng nhập với Google: $error");
+      // Trả về account rỗng
+      return Account.empty();
+    }
+  }
+
+
+
+  Future<DocumentReference> registerInFirestore(Account account) async {
+    DocumentReference docRef = await FirebaseFirestore.instance.collection('Users').add({
+      'email': account.email,
+      'userName': account.userName,
+      'userID': account.userID,
+      'avatarUrl': account.avatarUrl,
+      'search_history': []
+    });
+
+    return docRef;
+  }
+
+  Future loginHandle(Account account, String idUserDoc) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+
+        prefs.setString('id_user_doc', idUserDoc);
+        prefs.setString('user_id', account.userID);
+        prefs.setString('user_name', account.userName);
+        prefs.setString('avatar_url', account.avatarUrl);
+      // Navigator.pushReplacementNamed(context, '/main-screens');
+    } catch (e) {
+      // DialogHelper.warningAlertDialog(context, "Sai thông tin email hoặc mật khẩu", "Ok");
     }
   }
 

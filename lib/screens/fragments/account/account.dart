@@ -88,7 +88,7 @@ class _AccountFragmentState extends State<AccountFragment> {
           )
         ],
       ),
-      body: account == null ? CircularProgressIndicator() : Profile(account: account!,isUserLogin: true,),
+      body: account == null ? Container() : Profile(account: account!,isUserLogin: true,),
     );
   }
 }

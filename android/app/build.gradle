@@ -1,3 +1,11 @@
+//plugins {
+//    id "com.android.application"
+//    id "kotlin-android"
+//    id "dev.flutter.flutter-gradle-plugin"
+//    id 'com.google.gms.google-services'
+//    id '$flutterRoot/packages/flutter_tools/gradle/flutter.gradle'
+//}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -41,8 +49,8 @@ android {
         applicationId "com.example.y_videos"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 32
-        targetSdkVersion flutter.targetSdkVersion
+        minSdk 32
+        targetSdk flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -66,4 +74,6 @@ dependencies {
 
 
     implementation 'com.android.support:multidex:1.0.3'
+//    classpath 'com.android.tools.build:gradle:7.3.0'
 }
+

@@ -16,8 +16,9 @@ import '../../video_item_screen/video_item_screen.dart';
 class NotificationItem extends StatefulWidget {
   NotificationUser notificationUser;
   // Function reset
+  final Function reloadNotificationCount;
 
-  NotificationItem({super.key, required this.notificationUser});
+  NotificationItem({super.key, required this.notificationUser, required this.reloadNotificationCount});
 
   @override
   State<NotificationItem> createState() => _NotificationItemState();
@@ -72,6 +73,7 @@ class _NotificationItemState extends State<NotificationItem> {
         setState(() {
           widget.notificationUser.status = true;
         });
+        widget.reloadNotificationCount();
       });
     }
     if (widget.notificationUser.type == 1) {

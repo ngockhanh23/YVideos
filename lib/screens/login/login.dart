@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/screens/registers/email_register/email_register.dart';
-
+import 'package:y_videos/screens/registers/id_register/id_register.dart';
+import 'package:y_videos/servieces/account_services.dart';
 
 import '../../components/dialog_helper/dialog_helper.dart';
 import '../../models/account.dart';
 
 class Login extends StatefulWidget {
-
   @override
   State<Login> createState() => _LoginState();
 }
@@ -18,9 +19,9 @@ class _LoginState extends State<Login> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   FirebaseAuth _auth = FirebaseAuth.instance;
-  late SharedPreferences prefs ;
+  late SharedPreferences prefs;
 
-
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +87,10 @@ class _LoginState extends State<Login> {
                   height: 50,
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.redAccent),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(3.0),
@@ -110,7 +113,8 @@ class _LoginState extends State<Login> {
                         // Navigator.pushNamed(context, '/register');
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => EmailRegister()),
+                          MaterialPageRoute(
+                              builder: (context) => EmailRegister()),
                         );
                       },
                       child: Text(
@@ -119,6 +123,48 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: const Divider(
+                      thickness: 0.5,
+                    ),
+                  ),
+
+                  InkWell(
+                    // onTap: () {
+                    //   _signInWithGoogle().then((user) {
+                    //     if (user != null) {
+                    //       print('user login google :');
+                    //       print(user);
+                    //     } else {
+                    //       print('error loggin google :');
+                    //
+                    //     }
+                    //   });
+                    // },
+                    onTap: () => _signInWithGoogle(),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/google-logo.png',
+                            width: 40,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            "Đăng nhập bằng Google",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
                   // Center(
                   //   child: InkWell(
                   //     onTap: (){
@@ -136,14 +182,54 @@ class _LoginState extends State<Login> {
     );
   }
 
+  _signInWithGoogle() async {
+    AccountServices().signInWithGoogle().then((account) async {
+
+      print(account.userID + 'ádasdas');
+      print(account.userName + 'ádasdas');
+
+      if (account.userID.isEmpty) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => IDRegister(),
+              settings: RouteSettings(
+                arguments: account,
+              ),
+            )).then((_) {
+          // Navigator.pushReplacementNamed(context, '/main-screens');
+        });
+      }
+      else{
+        // AccountServices().getAccountByUserEmail(account.email).then((accountResult) => {
+        //   if(accountResult.email != null){
+        //     // Navigator.pushReplacementNamed(context, '/main-screens')
+        //     print(accountResult.userID)
+        //
+        //   }
+        // });
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String idDocUser = prefs.getString('id_user_doc') ?? "" ;
+        AccountServices().loginHandle(account, idDocUser).then((_) {
+          Navigator.pushReplacementNamed(context, '/main-screens');
+
+        });
+
+      }
+    });
+  }
+
   _onLogin(BuildContext context) async {
     try {
-      await this._auth.signInWithEmailAndPassword(email: this._emailController.text.trim(), password: this._passwordController.text.trim());
+      await this._auth.signInWithEmailAndPassword(
+          email: this._emailController.text.trim(),
+          password: this._passwordController.text.trim());
       print('đăng nhập thành công');
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('Users')
-          .where('email', isEqualTo: this._emailController.text).limit(1)
+          .where('email', isEqualTo: this._emailController.text)
+          .limit(1)
           .get();
       if (querySnapshot.docs.isNotEmpty) {
         var userData = querySnapshot.docs[0].data() as Map<String, dynamic>;
@@ -154,18 +240,14 @@ class _LoginState extends State<Login> {
         prefs.setString('user_id', userData['userID'].toString());
         prefs.setString('user_name', userData['userName'].toString());
         prefs.setString('avatar_url', userData['avatarUrl'].toString());
-
-
-
-
       } else {
         print('Không tìm thấy người dùng với email này.');
       }
 
       Navigator.pushReplacementNamed(context, '/main-screens');
     } catch (e) {
-      DialogHelper.warningAlertDialog(context, "Sai thông tin email hoặc mật khẩu", "Ok");
+      DialogHelper.warningAlertDialog(
+          context, "Sai thông tin email hoặc mật khẩu", "Ok");
     }
-
   }
 }

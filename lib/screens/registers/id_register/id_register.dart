@@ -124,18 +124,45 @@ class _IDRegisterState extends State<IDRegister> {
     if (await AccountServices().checkIDExists(_idController.text.trim())) {
       DialogHelper.warningAlertDialog(context, "Đã có người sử dụng Yvideo ID này", "Thử với ID khác");
     } else {
-      // Account account = Account.empty();
       account.userID = _idController.text.trim();
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PasswordRegister(),
-          settings: RouteSettings(
-            arguments: account,
+      if(account.userName == null){
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PasswordRegister(),
+            settings: RouteSettings(
+              arguments: account,
+            ),
           ),
-        ),
-      );
+        );
+      }
+      else{
+        // print('user name' + account.userName);
+        // Navigator.pop(context);
+        DocumentReference docRef = await AccountServices().registerInFirestore(account);
+
+
+        DocumentSnapshot snapshot = await docRef.get();
+
+
+        print('Document ID: ${snapshot.id}');
+
+
+        Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+        if (data != null) {
+          Account account = Account(data['userID'], data['userName'], data['avatarUrl'], data['email'], '');
+          AccountServices().loginHandle(account, snapshot.id).then((_) {
+            Navigator.pop(context);
+          });
+          
+        } else {
+          print('Không có dữ liệu.');
+        }
+
+        // AccountServices().loginHandle(account, idUserDoc)
+      }
     }
   }
 }

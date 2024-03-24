@@ -14,27 +14,30 @@ class _NotificationFragmentState extends State<NotificationFragment> {
   bool isLstNotiLoading = true;
   int _countUnreadNotification = 0;
 
-
   @override
   void initState() {
     _fetchNotificationData();
     super.initState();
   }
 
-
   _fetchNotificationData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userID = prefs.getString('user_id') ?? "";
     NotificationServices().fetchNotificationByUserID(userID).then((result) {
       setState(() {
-        _countUnreadNotification = result.where((notification) => notification.status == false).length;
+        _countUnreadNotification =
+            result.where((notification) => notification.status == false).length;
         _lstNotifications = result;
         isLstNotiLoading = false;
       });
     });
   }
 
-
+  resetUnreadNotificationCount() {
+    setState(() {
+      _countUnreadNotification--;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,35 +64,57 @@ class _NotificationFragmentState extends State<NotificationFragment> {
               children: [
                 Row(
                   children: [
-                    const Text('Bạn có ', style: TextStyle(fontSize: 18),),
-                    Text(_countUnreadNotification.toString(), style: TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),),
-                    const Text(' thông báo chưa đọc', style: TextStyle(fontSize: 18)),
-
+                    const Text(
+                      'Bạn có ',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      _countUnreadNotification.toString(),
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const Text(' thông báo chưa đọc',
+                        style: TextStyle(fontSize: 18)),
                   ],
                 ),
                 InkWell(
-                  child: const Text('Làm mới', style: TextStyle(fontSize: 18),),
+                  child: const Text(
+                    'Làm mới',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 )
               ],
             ),
-            if(isLstNotiLoading)
+            if (isLstNotiLoading)
               const CircularProgressIndicator()
-            else
-            if(_lstNotifications.isEmpty)
+            else if (_lstNotifications.isEmpty)
               const Center(
                 child: Column(
                   children: [
-                    Icon(Icons.notifications_off_outlined, size: 50,color: Colors.grey,),
-                    Text('Bạn không có thông báo nào', style: TextStyle(fontSize: 20),)
+                    Icon(
+                      Icons.notifications_off_outlined,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                    Text(
+                      'Bạn không có thông báo nào',
+                      style: TextStyle(fontSize: 20),
+                    )
                   ],
                 ),
               )
             else
               Column(
                 // mainAxisAlignment: MainAxisAlignment.start,
-                children: _lstNotifications.reversed.map((notification) => NotificationItem(notificationUser: notification)).toList(),
+                children: _lstNotifications.reversed
+                    .map((notification) => NotificationItem(
+                          notificationUser: notification,
+                          reloadNotificationCount: resetUnreadNotificationCount,
+                        ))
+                    .toList(),
               )
-
           ],
         ),
       ),
@@ -103,7 +128,8 @@ class _NotificationFragmentState extends State<NotificationFragment> {
         return Container(
             width: double.infinity,
             height: 200,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(15)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               // mainAxisAlignment: MainAxisAlignment.start,
@@ -124,7 +150,8 @@ class _NotificationFragmentState extends State<NotificationFragment> {
                               ),
                               Text(
                                 "Tất cả thông báo",
-                                style: TextStyle(fontSize: 20, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
                             ],
                           )),
@@ -148,7 +175,8 @@ class _NotificationFragmentState extends State<NotificationFragment> {
                               ),
                               Text(
                                 "Lượt thích và đăng ký",
-                                style: TextStyle(fontSize: 20, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
                             ],
                           )),
@@ -172,7 +200,8 @@ class _NotificationFragmentState extends State<NotificationFragment> {
                               ),
                               Text(
                                 "Bình luận",
-                                style: TextStyle(fontSize: 20, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
                             ],
                           )),
