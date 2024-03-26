@@ -126,7 +126,7 @@ class _IDRegisterState extends State<IDRegister> {
     } else {
       account.userID = _idController.text.trim();
 
-      if(account.userName == null){
+      if(account.userName.isEmpty){
 
         Navigator.pushReplacement(
           context,
