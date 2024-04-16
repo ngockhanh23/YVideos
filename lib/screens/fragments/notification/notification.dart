@@ -17,6 +17,7 @@ class _NotificationFragmentState extends State<NotificationFragment> {
   @override
   void initState() {
     _fetchNotificationData();
+
     super.initState();
   }
 

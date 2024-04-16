@@ -5,6 +5,7 @@ import 'package:video_player/video_player.dart';
 import 'package:y_videos/components/dialog_helper/dialog_helper.dart';
 import 'package:y_videos/screens/content_review/VideoPlayerReview.dart';
 import 'package:y_videos/servieces/account_services.dart';
+import 'package:y_videos/servieces/color_services.dart';
 import 'package:y_videos/servieces/notification_services.dart';
 import 'package:y_videos/servieces/video_sevices.dart';
 
@@ -202,7 +203,7 @@ class _ContentReviewState extends State<ContentReview> {
                   ),
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.redAccent),
+                        MaterialStateProperty.all<Color>(ColorServices.primaryColor),
                   ),
                 )),
           ],

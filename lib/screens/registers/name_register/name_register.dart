@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:y_videos/servieces/color_services.dart';
 import '../../../components/dialog_helper/dialog_helper.dart';
 import '../../../models/account.dart';
 
@@ -93,7 +94,7 @@ class _NameRegisterState extends State<NameRegister> {
                       if (states.contains(MaterialState.disabled)) {
                         return Colors.grey;
                       }
-                      return Colors.redAccent;
+                      return ColorServices.primaryColor;
                     },
                   ),
                   foregroundColor: MaterialStateProperty.all(Colors.white),

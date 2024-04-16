@@ -335,12 +335,12 @@ class _VideoItemState extends State<VideoItem> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         InkWell(
-                          child: Icon(
+                          child: const Icon(
                             Icons.share,
                             size: 50,
                             color: Colors.white,

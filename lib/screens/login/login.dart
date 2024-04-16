@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:y_videos/screens/registers/email_register/email_register.dart';
 import 'package:y_videos/screens/registers/id_register/id_register.dart';
 import 'package:y_videos/servieces/account_services.dart';
+import 'package:y_videos/servieces/color_services.dart';
 
 import '../../components/dialog_helper/dialog_helper.dart';
 import '../../models/account.dart';
@@ -88,7 +89,7 @@ class _LoginState extends State<Login> {
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.redAccent),
+                          MaterialStateProperty.all<Color>(ColorServices.primaryColor),
                       foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.white),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(

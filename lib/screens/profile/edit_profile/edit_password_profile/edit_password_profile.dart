@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 import 'package:y_videos/components/dialog_helper/dialog_helper.dart';
+import 'package:y_videos/servieces/color_services.dart';
 
 import '../../../../servieces/account_services.dart';
 import '../../../../servieces/custom_vietnamese_pw_validation.dart';
@@ -174,7 +175,7 @@ class _EditPasswordProfileState extends State<EditPasswordProfile> {
                       if (states.contains(MaterialState.disabled)) {
                         return Colors.grey;
                       }
-                      return Colors.redAccent;
+                      return ColorServices.primaryColor;
                     },
                   ),
                   foregroundColor: MaterialStateProperty.all(Colors.white),

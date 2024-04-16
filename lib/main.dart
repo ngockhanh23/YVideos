@@ -8,6 +8,7 @@ import 'package:y_videos/screens/profile/edit_profile/edit_password_profile/edit
 import 'package:y_videos/screens/profile/edit_profile/edit_profile.dart';
 import 'package:y_videos/screens/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:y_videos/servieces/color_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,16 +19,17 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Work App',
+      title: 'YVideos',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        primaryColor: Colors.white, // Màu chủ đạo của ứng dụng
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffff2100)),
+        fontFamily: 'NotoSants',
+        primaryColor: Colors.white, // Màu chủ đạo
+        colorScheme: ColorScheme.fromSeed(seedColor: ColorServices.primaryColor),
         scaffoldBackgroundColor: Colors.white, // Màu nền cho Scaffold
         textTheme: TextTheme(
           bodyText2: TextStyle(color: Colors.black), // Màu chữ mặc định

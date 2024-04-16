@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:y_videos/components/dialog_helper/dialog_helper.dart';
 import 'package:y_videos/servieces/account_services.dart';
+import 'package:y_videos/servieces/color_services.dart';
 
 class EditNameProfile extends StatefulWidget {
   @override
@@ -89,7 +90,7 @@ class _EditNameProfileState extends State<EditNameProfile> {
                           if (states.contains(MaterialState.disabled)) {
                             return Colors.grey;
                           }
-                          return Colors.redAccent;
+                          return ColorServices.primaryColor;
                         },
                       ),
                       foregroundColor: MaterialStateProperty.all(Colors.white),

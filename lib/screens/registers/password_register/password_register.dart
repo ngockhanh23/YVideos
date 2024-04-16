@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/Resource/Strings.dart';
 import 'package:y_videos/screens/registers/name_register/name_register.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+import 'package:y_videos/servieces/color_services.dart';
 
 
 import '../../../models/account.dart';
@@ -152,7 +153,7 @@ class _PasswordRegisterState extends State<PasswordRegister> {
                       if (states.contains(MaterialState.disabled)) {
                         return Colors.grey;
                       }
-                      return Colors.redAccent;
+                      return ColorServices.primaryColor;
                     },
                   ),
                   foregroundColor: MaterialStateProperty.all(Colors.white),

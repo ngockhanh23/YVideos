@@ -3,6 +3,7 @@ import 'package:y_videos/components/dialog_helper/dialog_helper.dart';
 import 'package:y_videos/models/account.dart';
 import 'package:y_videos/screens/registers/password_register/password_register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:y_videos/servieces/color_services.dart';
 
 import '../../../servieces/account_services.dart';
 
@@ -101,7 +102,7 @@ class _IDRegisterState extends State<IDRegister> {
                       if (states.contains(MaterialState.disabled)) {
                         return Colors.grey;
                       }
-                      return Colors.redAccent;
+                      return ColorServices.primaryColor;
                     },
                   ),
                   foregroundColor: MaterialStateProperty.all(Colors.white),

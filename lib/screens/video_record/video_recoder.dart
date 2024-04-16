@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:y_videos/servieces/color_services.dart';
 import 'dart:async';
 import '../content_review/content_review.dart';
 
@@ -158,7 +159,7 @@ class _VideoRecorderState extends State<VideoRecorder> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.redAccent,
+                      color: ColorServices.primaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
